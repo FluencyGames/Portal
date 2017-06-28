@@ -1,0 +1,29 @@
+Options +FollowSymLinks
+
+RewriteCond %{REQUEST_FILENAME} !-d
+#RewriteRule ^(.*)/$ /fluency-games/$1 [L,R=301]
+RewriteRule ^(.*)/$ /dev/portal/$1 [L,R=301]
+
+RewriteEngine on
+RewriteBase /
+
+# .php FIX
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteCond %{REQUEST_FILENAME}.php -f
+#RewriteRule ^(.+)$ /fluency-games/$1.php [L,QSA]
+RewriteRule ^(.+)$ /dev/portal/$1.php [L,QSA]
+
+# Pages
+#RewriteRule ^rosters$ /fluency-games/students [L,QSA]
+#RewriteRule ^manage/rosters$ /fluency-games/manage/students [R=301,L]
+RewriteRule ^manage/rosters$ /dev/portal/manage/students [R=301,L]
+
+# Error pages
+#ErrorDocument 403 /fluency-games/errorpages/404.php
+#ErrorDocument 404 /fluency-games/errorpages/404.php
+#ErrorDocument 500 /fluency-games/errorpages/500.php
+
+ErrorDocument 403 /dev/portal/errorpages/404.php
+ErrorDocument 404 /dev/portal/errorpages/404.php
+ErrorDocument 500 /dev/portal/errorpages/500.php

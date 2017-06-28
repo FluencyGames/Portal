@@ -1,0 +1,65 @@
+/* FADE IN */
+@-webkit-keyframes fade-in {
+	from { opacity: 0; }
+	to { opacity: 1; }
+}
+
+@-moz-keyframes fade-in {
+	from { opacity: 0; }
+	to { opacity: 1; }
+}
+
+@keyframes fade-in {
+	from { opacity: 0; }
+	to { opacity: 1; }
+}
+
+/* BOUNCE */
+@-webkit-keyframes bounce {
+	from { -webkit-transform: translateY(0deg); }
+	to { -webkit-transform: translateY(0px); }
+}
+
+@-moz-keyframes bounce {
+	from { -moz-transform: translateY(30px); }
+	to { -moz-transform: translateY(0px); }
+}
+
+@keyframes bounce {
+    0% {transform: translateY(30px);}
+	100% {transform: translateY(0);}
+}
+
+/* ROTATE */
+@-webkit-keyframes rotate {
+	from { -webkit-transform: rotate(0deg); }
+	to { -webkit-transform: rotate(360deg); }
+}
+
+@-moz-keyframes rotate {
+	from { -moz-transform: rotate(0deg); }
+	to { -moz-transform: rotate(360deg); }
+}
+
+@keyframes rotate {
+    0% {transform: rotate(0deg);}
+	100% {transform: rotate(360deg);}
+}
+
+@-webkit-keybrames 
+
+.card {
+	-webkit-animation: fade-in 0.5s; /* Chrome, Safari, Opera */ 
+	-moz-animation: fade-in 0.5s; /* Chrome, Safari, Opera */ 
+	animation: fade-in 0.5s;
+}
+
+.card .uploading .info span {
+	-webkit-transform-origin: 50% 52.75%;
+	-moz-transform-origin: 50% 52.75%;
+	transform-origin: 50% 52.75%;
+	
+	-webkit-animation: rotate 1.0s linear infinite; /* Chrome, Safari, Opera */ 
+	-moz-animation: rotate 1.0s linear infinite; /* Chrome, Safari, Opera */ 
+	animation: rotate 1.0s linear infinite;
+}

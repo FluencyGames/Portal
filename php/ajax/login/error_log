@@ -1,0 +1,2 @@
+[08-Jul-2016 14:04:50 America/Denver] PHP Notice:  Undefined index: password in /home5/fluencyg/public_html/playground/dev/portal/php/classes/User.class.php on line 130
+[08-Jul-2016 14:04:50 America/Denver] PHP Notice:  Undefined index: username in /home5/fluencyg/public_html/playground/dev/portal/php/classes/User.class.php on line 133

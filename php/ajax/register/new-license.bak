@@ -1,0 +1,124 @@
+<?php
+	require_once(__DIR__ . '/../../classes/Database.class.php');
+	require_once(__DIR__ . '/../../license.php');
+	require_once(__DIR__ . '/../../services/PHPMailer/PHPMailerAutoload.php');
+
+	define('HOME', 0);
+	define('SCHOOL', 1);
+	
+	define('YEARLY', 1);
+	define('UNIVERSAL', 9);
+	
+	define('USERTYPE_ADMIN', 1);
+	define('USERTYPE_TEACHER', 2);
+	define('USERTYPE_TEACHER_ADMIN', 3);
+	define('USERTYPE_HOME', 4);
+	
+	$useHtml=true;
+	
+	// Init
+	$response = array('success' => false, 'error' => null);
+	$db = Database::getInstance();
+	
+	// Parse things
+	$_POST['licenseType'] = intval($_POST['licenseType']);
+	$_POST['level'] = intval($_POST['level']);
+	$_POST['productValue'] = intval($_POST['productValue']);
+	
+	// Create the license key
+	$licenseKey = license_make_key($_POST['username'], $_POST['licenseType'], $_POST['level'], $_POST['productValue']);
+	
+	// Get the system name
+	$system = ($_POST['level'] == HOME) ? 'HOME' : $_POST['schoolName'];
+	
+	// Dates
+	$startDate = time();
+	if ($_POST['licenseType'] == YEARLY)
+		$endDate = strtotime('+365 days', $startDate);
+	else if ($_POST['licenseType'] == UNIVERSAL)
+		$endDate = strtotime('+100 year', $startDate);
+	
+	// Date strings
+	$startDateStr = date('Y-m-d 00:00:00', $startDate);
+	$endDateStr = date('Y-m-d 00:00:00', $endDate);
+	
+	// Number of seats
+	$seats = ($_POST['level'] == HOME) ? 6 : intval($_POST['numSeats']);
+	
+	// Domain suffix
+	$domainSuffix = '';
+	
+	// Purchase info
+	$purchaseSource = 'FGPortal';
+	$purchaseData = '';
+	
+	// UserType
+	$userType = USERTYPE_HOME;
+	if ($_POST['level'] == SCHOOL) {
+		if (intval($_POST['teacher']) == 1)
+			$userType = USERTYPE_TEACHER_ADMIN;
+		else
+			$userType = USERTYPE_ADMIN;
+	}
+	
+	// LicenseKey
+
+	
+	// Insert license
+	//$query = 'INSERT INTO userlicenses (LicenseKey, Type, System, StartDate, EndDate, NumUsers, Products, DomainSuffix, PurchaseSource, PurchaseData) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)';
+	//$licenseData = array($licenseKey, $_POST['licenseType'], $system, $startDateStr, $endDateStr, $seats, $_POST['productValue'], $domainSuffix, $purchaseSource, $purchaseData);
+	//$result = $db->query($query, $licenseData)->result();
+	
+	// Insert contact
+	//$query = 'INSERT INTO contacts (license, Username, UserType, Groups, Email) VALUES (?, ?, ?, ?, ?)';
+	//$contactData = array($licenseKey, $_POST['username'], $userType, $_POST['group'], $_POST['email']);
+	//$result = $db->query($query, $contactData)->result();
+	
+	$mail = new PHPMailer;
+	$config = $GLOBALS['config'];
+	$email = $config['email'];
+	$from = $email['support'];
+	
+	$mail->isSMTP();                                      // Set mailer to use SMTP
+	$mail->Host = $email['host'];						  // Specify main and backup SMTP servers
+	$mail->SMTPAuth = $email['auth'];                     // Enable SMTP authentication
+	$mail->Username = $email['smtp-user'];                // SMTP username
+	$mail->Password = $email['smtp-password'];            // SMTP password
+	$mail->SMTPSecure = $email['smtp-security'];          // Enable TLS encryption, `ssl` also accepted
+	$mail->Port = $email['port'];                         // TCP port to connect to
+
+	$mail->setFrom($_POST['email'], 'Mailer');
+	$mail->addAddress($from['address']);     				// Add a recipient
+	
+	$mail->isHTML(true);                                  	// Set email format to HTML
+
+	$mail->Subject = 'License Purchase';
+	/*
+	$body = _html('<h2><b>',  'Purchase Request made on ' . date('Y-m-d 00:00:00', time()), '</b></h2><br/><br/>');
+	$body += _html('<h5>');
+	$body += _html('<p>', 'License : ' . ( $_POST['level']==HOME )?'HOME':'SCHOOL', '</p>');
+	$body += _html('<p>', 'License Length: ' . ($_POST['licenseType']==YEARLY)?'YEARLY':'UNIVERSAL', '</p>');
+	$body += _html('<p>', 'Product Code: ' . $_POST['productValue'], '</p>');
+	$body += _html('<p>', 'School System: ' . ($_POST['level']==HOME)?' ':$_POST['schoolName'], '</p>');
+	$body += _html('<p>', 'Start date: ' . $startDateStr, '</p>');
+	$body += _html('<p>', 'End date: ' . $endDateStr, '</p>');
+	$body += _html('<p>', 'Seats: ' . $seats, '</p>');
+	$body += _html('</h5>');
+
+	echo $body;
+	*/
+	$mail->Body    = '<p>Sending a test message</p>';
+	$mail->AltBody = 'Sending a test message';
+
+	if(!$mail->send()) {
+	    echo 'Message could not be sent.';
+	    echo 'Mailer Error: ' . $mail->ErrorInfo;
+		$response['success'] = false;
+	} else {
+	    echo 'Message has been sent';
+		$response['success'] = true;
+	}
+	
+	
+	echo json_encode($response);
+?>

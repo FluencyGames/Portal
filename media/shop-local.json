@@ -1,0 +1,128 @@
+{
+	"PROD-ADD-BLOCKS": {
+		"Name": "Addition Blocks",
+		"Product-Id": "50",
+		"Price": "0.00",
+		"data": "1"
+	},
+	"PROD-MX-BLOCKS": {
+		"Name": "Multiplication Blocks",
+		"Product-Id": "51",
+		"Price": "0.00",
+		"data": "2"
+	},
+	"PROD-PERCENT-BINGO": {
+		"Name": "Percent Bingo",
+		"Product-Id": "52",
+		"Price": "0.00",
+		"data": "4"
+	},
+	"PROD-SUB-BLOCKS": {
+		"Name": "Subtraction Blocks",
+		"Product-Id": "53",
+		"Price": "0.00",
+		"data": "8"
+	},
+	"PROD-INT-BLOCKS": {
+		"Name": "Integer Blocks",
+		"Product-Id": "54",
+		"Price": "0.00",
+		"data": "16"
+	 },
+	"SUB-HOME-MONTHLY": {
+	    "Name": "Monthly",
+		"Product-Id": "41",
+		"Price": "1.99",
+		"data": "3"
+	},
+	"SUB-HOME-YEARLY": {
+	    "Name": "Yearly",
+		"Product-Id": "40",
+		"Price": "9.99",
+		"data": "2"
+	},
+	"SUB-HOME-UNIVERSAL": {
+	    "Name": "Universal",
+		"Product-Id": "42",
+		"Price": "19.99",
+		"data": "1"
+	},
+	"LIC-ADD-BLOCKS": {
+		"Name": "Addition Blocks",
+		"Product-Id": "55",
+		"Price": "0.00",
+		"data": "1"
+	},
+	"LIC-MX-BLOCKS": {
+		"Name": "Multiplication Blocks",
+		"Product-Id": "56",
+		"Price": "0.00",
+		"data": "2"
+	},
+	"LIC-PERCENT-BINGO": {
+		"Name": "Percent Bingo",
+		"Product-Id": "57",
+		"Price": "0.00",
+		"data": "4"
+	},
+	"LIC-SUB-BLOCKS": {
+		"Name": "Subtraction Blocks",
+		"Product-Id": "58",
+		"Price": "0.00",
+		"data": "8"
+	},
+	"LIC-INT-BLOCKS": {
+		"Name": "Integer Blocks",
+		"Product-Id": "59",
+		"Price": "0.00",
+		"data": "16"
+	},
+	"SUB-SCHOOL-CLASSROOM": {
+	    "Name": "Yearly",
+		"Product-Id": "43",
+		"Price": "39.99",
+		"data": "1"
+	},		
+	"SUB-SCHOOL-UNIVERSAL": {
+	    "Name": "Universal",
+		"Product-Id": "61",
+		"Price": "99.99",
+		"data": "9"
+	},		
+	"SUB-SCHOOL-SCHOOL": {
+	    "Name": "Yearly",
+		"Product-Id": "44",
+		"Price": "499.99",
+		"data": "1"
+	},		
+	"SEATS-99": {
+		"Name": "Seats: 0-99",
+		"Product-Id": "45",
+		"Price": "0.99",
+		"data": "100"
+	},
+	"SEATS-250": {
+		"Name": "Seats: 100-249",
+		"Product-Id": "46",
+		"Price": "0.89",
+		"data": "250"
+	},
+	"SEATS-500": {
+		"Name": "Seats: 250-499",
+		"Product-Id": "47",
+		"Price": "0.79",
+		"data": "500"
+	},
+	"SEATS-1K": {
+		"Name": "Seats: 500-999",
+		"Product-Id": "48",
+		"Price": "0.59",
+		"data": "1000"
+	},
+	"SEATS-1K-PLUS": {
+		"Name": "Seats: 1000+",
+		"Product-Id": "49",
+		"Price": "0.49",
+		"data": "99999"
+	}
+}

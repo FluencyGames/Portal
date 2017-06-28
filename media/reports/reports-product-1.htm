@@ -1,0 +1,49 @@
+<body>
+	<br/>
+	<table>
+		<tr>
+			<th>All Games (<NumberOfGames>Games</NumberOfGames>)</th><th></th>
+			<th>Last Game:</th><th></th>
+			<th>All Sums</th><th></th>
+		</tr>
+		<tr>
+			<td>Avg. Score:</td><td><Avg fixed="0">0</Avg></td>
+			<td>Score:</td><td><LastGameScore>Date</LastGameScore></td>
+			<td>Accuracy:</td><td><successRate percent="0">100</successRate></td>			
+		</tr>
+		<tr>
+			<td>Speed:</td><td><PtsPerSec fixed="2">0</PtsPerSec> Pts/Sec</td>
+			<td>Speed:<td><LastGamePtsPerSec fixed="2">0</LastGamePtsPerSec> Pts/Sec</td>
+			<td>Speed:</td><td><secPerSum fixed="2">0.00</secPerSum> Sec./Sum</td>
+		</tr>
+		<tr>
+            <td>Accuracy:</td><td><Accuracy percent="0">100</Accuracy></td>
+            <td>Accuracy:</td><td><LastGameAccuracy percent="0">100</LastGameAccuracy></td>
+			<td>Variations:</td><td><combosPerSum fixed="2">0.0</combosPerSum> Combos / Sum</td>
+		</tr>
+	</table>
+	<br/>	
+	<div class="clear">
+	<div class="report-graph">
+		<div class="row">
+			<div class = "canvas-wrapper" align="left">
+				<canvas id="Score" type="scatter" title="Score By Game" data-obj = "games" data-src="games" data-col="Score" x-label="Game" y-label="Score"></canvas>
+			</div>
+			<div class = "canvas-wrapper">
+				<canvas id="Speed" type="scatter" title="Speed By Game" data-obj = "games" data-src="games" data-col="PtsPerSec" x-label="Game" y-label="Pts Per Sec"></canvas>
+			</div>
+		</div>
+	</div>
+	<div class="report-graph">
+		<div class="row">
+            <div class="clear"></div>
+			<div class = "canvas-wrapper" align="left">
+				<canvas id="Accuracy" type="bar" title="Accuracy Per Sum" data-obj = "progress" data-src="progressData" data-label="Sum" data-col="Accuracy" x-label="Sum" y-label="Percent Correct"></canvas>
+			</div>
+			<div class = "canvas-wrapper">
+				<canvas id="TargetSpeed" type="bar" title="Speed Per Sum" data-obj = "progress" data-src="progressData" data-label="Sum" data-col="SecPer" x-label="Sum" y-label="Seconds"></canvas>
+			</div>
+		</div>
+	</div>
+		
+</body>

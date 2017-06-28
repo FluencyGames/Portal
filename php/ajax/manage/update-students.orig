@@ -1,0 +1,91 @@
+<?php
+	require_once(__DIR__ . '/../../classes/Config.class.php');
+	require_once(__DIR__ . '/../../classes/User.class.php');
+	
+	function failure($db) {
+		$db->rollback();
+		$response['success'] = false;
+		$response['error'] = 'An unknown error occurred, please try again. If the problem persists, try refreshing the page.';
+		echo json_encode($response);
+		die();
+	}
+	
+	// TODO: Add WHERE license = ? to every query!!
+	
+	$response = array('success' => false, 'error' => null);
+	
+	$db = Database::getInstance();
+	$db->beginTransaction();
+	
+	$user = User::getCurrentUser();
+	$license = $user->getColumn("license");
+
+	if (isset($_POST['added'])) {
+		$insertQuery = 'INSERT INTO students (Username, Fname, Lname, LicenseKey, GroupName, Products) VALUES (?, ?, ?, ?, ?, ?)';
+		$sQuery = 'SELECT Id FROM students WHERE Username = ? AND LicenseKey = ?';
+		$tQuery = 'SELECT Id fROM contacts WHERE Groups = ? AND license = ?';
+		$pairQuery = 'INSERT INTO str (student, teacher) VALUES (?, ?)';
+		
+		echo json_encode($_POST['added']);
+		
+		foreach ($_POST['added'] as $student) {
+		
+			$db->query($insertQuery, array($student['Username'], $student['First name'], $student['Last name'], $license, $student['Group'], 255));
+			if ($db->error()) failure($db);
+			
+			//$sResult = $db->query($sQuery, array($student['Username'], $license))->firstResult();
+			//if ($db->error()) failure($db);
+			
+			//$tResult = $db->query($tQuery, array($student['Group'], $license))->firstResult();
+			//if ($db->error()) failure($db);
+			
+			//$db->query($pairQuery, array($sResult['Id'], $tResult['Id']));
+			//if ($db->error()) failure($db);
+		}
+	}
+	
+	if (isset($_POST['edited'])) {
+		$updateQuery = 'UPDATE students SET Username = ?, Fname = ?, Lname = ? WHERE Id = ? AND LicenseKey = ?';
+		//$sQuery = 'SELECT Id FROM students WHERE Username = ? AND LicenseKey = ?';
+		//$tQuery = 'SELECT Id FROM contacts WHERE Groups = ? AND license = ?';
+		//$pairQuery = 'UPDATE str SET GroupName = ? WHERE student = ?';
+		
+		foreach ($_POST['edited'] as $student) {
+			$db->query($updateQuery, array($student['Username'], $student['First name'], $student['Last name'], $student['Id'], $license));
+			if ($db->error()) failure($db);
+			
+			//$sResult = $db->query($sQuery, array($student['Username'], $license))->firstResult();
+			//if ($db->error()) failure($db);
+			
+			//$tResult = $db->query($tQuery, array($student['Group'], $license))->firstResult();
+			//if ($db->error()) failure($db);
+			
+			//$db->query($pairQuery, array($tResult['Id'], $sResult['Id']));
+			//if ($db->error()) failure($db);
+		}
+	}
+	
+	if (isset($_POST['deleted'])) {
+		$strQuery = 'DELETE FROM str WHERE student = ?';
+		$deleteQuery = 'DELETE FROM students WHERE Id = ? AND LicenseKey = ?';
+		$dataQuery = 'DELETE FROM gamedata WHERE LicenseKey = ? and Username = ?';
+		
+		foreach ($_POST['deleted'] as $student) {
+			$db->query($strQuery, array($student['Id']));
+			if ($db->error()) failure($db);
+			
+			$db->query($deleteQuery, array($student['Id'], $license));
+			if ($db->error()) failure($db);
+			
+			// added 12-10-15 mse delete user data from GameData database as well
+			$db->query($dataQuery, array($license, $student['Username']));
+			if ($db->error()) failure($db);
+		}
+	}
+	
+	$db->commit();
+	
+	$response['success'] = true;
+	
+	echo json_encode($response);
+?>
