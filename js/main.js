@@ -23,7 +23,8 @@ function getCookie(name) {
 function getAbsoluteUrl(url) {
     var _http =  document.location.protocol == 'https:' ? 'https://' : 'http://';
 	//return (url != null ? !/^(https?\:\/\/|\/)/i.test(url) ? _http + location.hostname + "/playground/dev/portal/" + url : url : "");
-	return (url != null ? !/^(https?\:\/\/|\/)/i.test(url) ? _http + location.hostname + "/portal/" + url : url : "");
+	//return (url != null ? !/^(https?\:\/\/|\/)/i.test(url) ? _http + location.hostname + "/portal/" + url : url : "");
+	return (url != null ? !/^(https?\:\/\/|\/)/i.test(url) ? _http + location.hostname + "/dev/portal/" + url : url : "");
 }
 
 function prepareAjax(settings) {

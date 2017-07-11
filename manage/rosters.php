@@ -307,15 +307,18 @@
 				<div class="col-xs-12 col-sm-8 col-md-12 col-lg-3">
 					<div class="card">
 						<div class="head center">
-							Upload Students
+							Utilities
 						</div>
 						<div class="body">
 							<div class="row row-no-margin">
 								<div class="col-xs-12 col-sm-12 col-md-push-2 col-md-4 col-lg-push-0 col-lg-12">
-									<div class="big-button" data-href="<?php echo $template; ?>" data-icon="download">Template</div>
+									<div class="big-button" data-href="#" data-icon="print">Print Usernames</div>
 								</div>
 								<div class="col-xs-12 col-sm-12 col-md-push-2 col-md-4 col-lg-push-0 col-lg-12">
 									<div class="big-button" data-icon="upload" data-file-id="student-csv-upload" data-file-type=".csv">Upload CSV</div>
+								</div>
+								<div class="col-xs-12 col-sm-12 col-md-push-2 col-md-4 col-lg-push-0 col-lg-12">
+									<div class="big-button" data-href="<?php echo $template; ?>" data-icon="download">Template</div>
 								</div>
 								<div class="clear"></div>
 							</div>
