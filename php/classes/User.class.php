@@ -553,6 +553,8 @@
 		}
 		
 		public function getNotifications() {
+			return null;
+			
 			$n = rand(0, 3);
 		
 			$notifications = null;
@@ -561,14 +563,20 @@
 			switch ($n) {
 				case 0: break;
 				case 1:
-					$notifications = array('icon-bell-alt' => 'Assignment 1 Due 3/17',
-						'icon-attention' => 'Late assignment');
+					$notifications = array(
+						'icon-bell-alt' => 'Assignment 1 Due 3/17',
+						'icon-attention' => 'Late assignment'
+					);
 					break;
 				case 2:
-					$notifications = array('icon-eye' => 'Thing requires attention');
+					$notifications = array(
+						'icon-eye' => 'Thing requires attention'
+					);
 					break;
 				case 3:
-					$notifications = array('icon-thumbs-up-alt' => 'You passed');
+					$notifications = array(
+						'icon-thumbs-up-alt' => 'You passed'
+					);
 					break;
 			}
 			

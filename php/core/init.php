@@ -68,7 +68,7 @@
 		'mediaroot' => '/media/',
 		'shoproot' => '/xcart/',
 
-		'live' => true,
+		'live' => false,
 		'maintenance' => false,
 		'version' => '1.1.060617 beta',
 		
