@@ -322,8 +322,7 @@
 			return $response;
 		}
 		
-		public function validateNewPassword($pword)
-		{
+		public function validateNewPassword($pword) {
 		    $cnt = 0;
 			
 		    if(!empty($pword)) {
