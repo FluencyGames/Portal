@@ -8,17 +8,31 @@
 	$teacherOrStudent = $_GET['type'];
 	
 	$LNameStr = '';
+	$numItems = 0;
 	switch ($teacherOrStudent) {
 		case 'teachers': {
 			$LNameStr = 'LName';
 			$orderBy = "ORDER BY {$LNameStr} ASC";
 			$items = $user->getTeachers($orderBy);
+			
+			$numItems = count($items);
 		} break;
 		
 		case 'students': {
 			$LNameStr = 'Lname';
 			$orderBy = "ORDER BY {$LNameStr} ASC";
 			$items = $user->getStudents($orderBy);
+			
+			// Decode all the items
+			$numItems = count($items);
+			for ($i = 0; $i < $numItems; ++$i) {
+				$items[$i]['Fname'] = User::decode($items[$i]['Fname']);
+				$items[$i][$LNameStr] = User::decode($items[$i][$LNameStr]);
+				$items[$i]['Username'] = User::decode($items[$i]['Username']);
+			}
+			
+			// Now that they're decoded, we need to sort them
+			$user->sortStudents($items);
 		} break;
 		
 		default:
@@ -74,8 +88,8 @@
 </head>
 <body>
 	<?php
-		$numItems = count($items);
-		for ($i = 0; $i < $numItems; ++$i) {
+		$i = 0;
+		foreach ($items as $item) {
 			if ($i % 7 == 0) {
 	?>
 	<div class="names">
@@ -83,9 +97,9 @@
 			}
 	?>
 		<div class="row">
-			<div class="col-xs-3"><?php print($items[$i][$LNameStr]); ?></div>
-			<div class="col-xs-3"><?php print($items[$i]['Fname']); ?></div>
-			<div class="col-xs-3"><?php print($items[$i]['Username']); ?></div>
+			<div class="col-xs-3"><?php print($item[$LNameStr]); ?></div>
+			<div class="col-xs-3"><?php print($item['Fname']); ?></div>
+			<div class="col-xs-3"><?php print($item['Username']); ?></div>
 			<div class="col-xs-3">FOUR</div>
 		</div>
 	<?php
@@ -95,6 +109,7 @@
 	<div class="page-break"></div>
 	<?php
 			}
+			++$i;
 		}
 	?>
 </body>
