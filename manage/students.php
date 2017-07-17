@@ -20,17 +20,10 @@
 <head>
 	<?php Element::head("Fluency Games User Portal"); ?>
 	
-	<script src="<?php echo $documentroot; ?>js/math.js"></script>	
-	<script src="<?php echo $documentroot; ?>js/buffer.js"></script>	
-	<script src="<?php echo $documentroot; ?>js/reports/process-report.js"></script>		
+	<script src="<?php echo $documentroot; ?>js/math.js"></script>
+	<script src="<?php echo $documentroot; ?>js/buffer.js"></script>
+	<script src="<?php echo $documentroot; ?>js/reports/process-report.js"></script>
 	<script src="<?php echo $documentroot; ?>js/manage/student-settings.js"></script>
-	
-	<style type="text/css">
-		.checkbox-input-wrapper {
-			display: inline-block;
-		}
-	</style>
-	
 </head>
 <body>
 	<?php Element::header(5); ?>

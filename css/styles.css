@@ -449,24 +449,24 @@ h1, h2, h3, h4, h5, h6, p {
 	text-align: center;
 }
 
-/* STUDENTS PAGE */
+/* STUDENTS/SNAPSHOT PAGE */
 
-.student-settings {
+.student-settings, .snapshot {
 	width: 100%;
 	padding: 10px 15px;
 	border-bottom: 1px solid #CDCDCD;
 	font-weight: 600;
 }
 
-.student-settings:last-of-type {
+.student-settings:last-of-type, .snapshot:last-of-type {
 	margin-bottom: 100px;
 }
 
-.student-settings.bulk {
+.student-settings.bulk, .snapshot.product {
 	background-color: #E6E8E9;
 }
 
-.student-settings .name {
+.student-settings .name, .snapshot .name {
 	display: inline-block;
 	width: 125px;
 	font-size: 13px;
@@ -478,12 +478,12 @@ h1, h2, h3, h4, h5, h6, p {
 }
 
 @media (min-width: 992px) {
-	.student-settings .name {
+	.student-settings .name, .snapshot .name {
 		width: 170px;
 	}
 }
 
-.student-settings select {
+.student-settings select, .snapshot select {
 	width: 150px;
 	padding: 3px 5px;
 	margin: 0px 0px 0px 7px;
@@ -491,9 +491,12 @@ h1, h2, h3, h4, h5, h6, p {
 	/*vertical-align: center;*/
 }
 
-.student-settings .links {
+.student-settings .links, .snapshot .right-aligned-products {
 	display: inline-block;
 	float: right;
+}
+
+.student-settings .links {
 	padding: 2px 0px;
 }
 
@@ -521,6 +524,42 @@ h1, h2, h3, h4, h5, h6, p {
 	font: inherit;
 	vertical-align: baseline;
 	border-bottom: 1px solid #CDCDCD;
+}
+
+.snapshot .name {
+	line-height: 30px;
+	height: 30px !important;
+	vertical-align: center;
+	margin-bottom: 0px;
+}
+
+.snapshot .scores-3-pair {
+	height: 30px;
+}
+
+.snapshot .score-title {
+	text-align: center;
+	line-height: 33px;
+}
+
+.snapshot .score-circle {
+	width: 30px;
+	height: 30px;
+	margin: 0px auto;
+	-webkit-border-radius: 50%;
+	-moz-border-radius: 50%;
+	border-radius: 50%;
+	border: 2px solid #A0A0A0;
+}
+
+.snapshot .score-circle.green {
+	background-color: #1FAC28;
+	border: 0px;
+}
+
+.snapshot .score-circle.red {
+	background-color: #B35656;
+	border: 0px;
 }
 
 .end-student-settings {
@@ -1182,6 +1221,10 @@ input[type="checkbox"]:disabled + label::before {
 	font-style: italic;
 	font-weight: lighter;
 	color: #7f7f7f;
+}
+
+.checkbox-input-wrapper {
+	display: inline-block;
 }
 
 .checkbox-input-wrapper + .name {

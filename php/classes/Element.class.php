@@ -241,7 +241,7 @@
 							</li>
 						</a>
 						<a href="<?php echo $documentroot; ?>logout">
-							<li<?php echo ($n == 5) ? ' class="selected"' : ''; ?>>
+							<li<?php /* This is definitely not correct echo ($n == 5) ? ' class="selected"' : '';*/ ?>>
 								<span class="icon-logout"></span>Log out
 							</li>
 						</a>
@@ -296,6 +296,7 @@
 								self::sidebarItem('teachers', 'Manage Teachers', $n, ++$i, EDUCATIONAL_ADMIN);
 								self::sidebarItem('rosters', 'Manage Rosters', $n, ++$i, TEACHER | TEACHER_ADMIN | EDUCATIONAL_ADMIN);
 								self::sidebarItem('students', 'Manage Students', $n, ++$i, TEACHER | TEACHER_ADMIN | PARENT_GUARDIAN);
+								self::sidebarItem('snapshot', 'Student Snapshot', $n, ++$i, EDUCATIONAL_ADMIN | TEACHER | TEACHER_ADMIN | PARENT_GUARDIAN);
 							?>
 						</ul>
 					</div>

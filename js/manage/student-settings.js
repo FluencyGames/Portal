@@ -140,7 +140,9 @@ function iFrameToggle(id, src, type) {
         var _http =  document.location.protocol == 'https:' ? 'https://' : 'http://';
 		iframe = $('<iframe data-id="' + id + '" data-type="' + type + '"></iframe>');
 		//iframe.attr("src", _http + location.hostname + "/playground/dev/portal/" + src);
-		iframe.attr("src", _http + location.hostname + "/portal/" + src);
+		var url = getAbsoluteUrl(src);
+		iframe.attr("src", url);
+		//iframe.attr("src", _http + location.hostname + "/portal/" + src);
 		iframe.insertAfter($(".student-settings[data-id=" + id + "]"));
 	}
 }
