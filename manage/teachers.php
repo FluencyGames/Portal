@@ -33,24 +33,15 @@
 			userData.sort( function(a, b) {
 				var A = a['LName'];
 				var B = b['LName'];
-				if( A < B )
-					res = -1;
-				else if( A > B )
-					res =  1;
-				else {
+				res = (A > B) - (A < B);
+				if (res == 0) {
 					A = a['Fname'];
 					B = b['Fname'];
-					if( A < B )
-						res = -1;
-					else if( A > B )
-						res = 1;
-					else
-						res = 0;
+					res = (A > B) - (A < B);
 				}
 				return res;
 			});
 		}
-
 				
 		function processUsers(userData) {
 			var curUser;

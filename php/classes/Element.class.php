@@ -92,6 +92,7 @@
 			// TODO: Google Analytics
 			// TODO: Remove Open Sans not using
 			$documentroot = Config::get('documentroot');
+			$jquery = Config::get('live') ? 'https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js' : ($documentroot . 'js/jquery.min.js');
 			?>
 	<title><?php echo $title; ?></title>
 	<meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
@@ -103,7 +104,7 @@
 	<link rel="stylesheet" type="text/css" href="<?php echo $documentroot; ?>css/fontello.css">
 	<link rel="stylesheet" type="text/css" href="<?php echo $documentroot; ?>css/animation.css"><!--[if IE 7]><link rel="stylesheet" href="<?php echo $documentroot; ?>css/fontello-ie7.css"><![endif]-->
 
-	<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
+	<script src="<?php echo $jquery; ?>"></script>
 	<script src="<?php echo $documentroot; ?>js/main.js"></script>
 	<script src="<?php echo $documentroot; ?>js/modal.js"></script>
 	<script src="<?php echo $documentroot; ?>js/input.js"></script>
@@ -114,10 +115,13 @@
 	<script>
 	Sequence.setBreakpoints(768, 992, 1200);
 	$(document).ready(function(){
+		//$('[data-toggle="tooltip"][data-html="true"]').tipsy({html: true, gravity: 's'});
+		
 		$('[data-toggle="tooltip"][data-gravity="w"]').tipsy({/*fade: true, */gravity: 'w'});
 		$('[data-toggle="tooltip"][data-gravity="n"]').tipsy({/*fade: true, */gravity: 'n'});
 		$('[data-toggle="tooltip"][data-gravity="e"]').tipsy({/*fade: true, */gravity: 'e'});
 		$('[data-toggle="tooltip"]').tipsy({/*fade: true, */gravity: 's'});
+		
 	});
 	</script>
 			<?php
