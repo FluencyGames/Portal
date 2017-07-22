@@ -458,7 +458,7 @@ h1, h2, h3, h4, h5, h6, p {
 	font-weight: 600;
 }
 
-.student-settings:last-of-type, .snapshot:last-of-type {
+.student-settings:last-of-type/*, .snapshot:last-of-type*/ {
 	margin-bottom: 100px;
 }
 
@@ -527,7 +527,7 @@ h1, h2, h3, h4, h5, h6, p {
 }
 
 .snapshot .name {
-	line-height: 30px;
+	line-height: 36px;
 	height: 30px !important;
 	vertical-align: center;
 	margin-bottom: 0px;
@@ -535,6 +535,7 @@ h1, h2, h3, h4, h5, h6, p {
 
 .snapshot .scores-3-pair {
 	height: 30px;
+	text-align: center;
 }
 
 .snapshot .score-title {
@@ -542,24 +543,36 @@ h1, h2, h3, h4, h5, h6, p {
 	line-height: 33px;
 }
 
-.snapshot .score-circle {
-	width: 30px;
+.snapshot .score-circle, .snapshot .trend-icon {
+	font-size: 36px;
+	line-height: 30px;
+	color: #A0A0A0;
+	/*width: 30px;
 	height: 30px;
 	margin: 0px auto;
 	-webkit-border-radius: 50%;
 	-moz-border-radius: 50%;
 	border-radius: 50%;
-	border: 2px solid #A0A0A0;
+	border: 2px solid #A0A0A0;*/
 }
 
-.snapshot .score-circle.green {
-	background-color: #1FAC28;
-	border: 0px;
+.snapshot .trend-icon {
+	width: 50px;
+	margin-left: -10px;
 }
 
-.snapshot .score-circle.red {
-	background-color: #B35656;
-	border: 0px;
+.snapshot .trend-icon.empty {
+	display: inline-block;
+	width: 50px;
+	height: 10px;
+}
+
+.snapshot .green {
+	color: #1FAC28;
+}
+
+.snapshot .red {
+	color: #B35656;
 }
 
 .end-student-settings {
