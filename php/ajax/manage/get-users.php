@@ -1,6 +1,5 @@
 <?php
 	require_once(__DIR__ . "/../../classes/Config.class.php");
-	require_once(__DIR__ . "/../../classes/Element.class.php");
 	require_once(__DIR__ . "/../../classes/User.class.php");
 	
 	// Response

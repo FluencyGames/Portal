@@ -533,9 +533,21 @@ h1, h2, h3, h4, h5, h6, p {
 	margin-bottom: 0px;
 }
 
-.snapshot .scores-3-pair {
+.snapshot .scores-3-group {
 	height: 30px;
 	text-align: center;
+}
+
+.snapshot .scores-3-group.no-data:before {
+	content: 'No data';
+	line-height: 36px;
+	height: 30px !important;
+	vertical-align: center;
+	font-size: 13px;
+}
+
+.snapshot .scores-3-group.no-data div {
+	display: none;
 }
 
 .snapshot .score-title {
