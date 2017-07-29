@@ -318,8 +318,9 @@
 						<ul>
 							<?php
 								$i = 0;
-								self::sidebarItem('../settings/index.php', 'General', $n, ++$i, UNRESTRICTED);
+								self::sidebarItem('../settings/index', 'General', $n, ++$i, UNRESTRICTED);
 								self::sidebarItem('password', 'Password', $n, ++$i, UNRESTRICTED);
+								self::sidebarItem('teacher-options', 'Teacher Options', $n, ++$i, TEACHER | TEACHER_ADMIN);
 							?>
 						</ul>
 					</div>
@@ -470,6 +471,15 @@
 			</div>
 
 			<?php
+		}
+		
+		public static function productSelectInput($products) {
+			if($products & 0x01) { ?> <option value="1" >Addition Blocks</option> <?php }
+			if($products & 0x02) { ?> <option value="2" >Multiplication Blocks</option> <?php }
+			if($products & 0x04) { ?> <option value="4" >Percent Bingo</option> <?php }
+			if($products & 0x08) { ?> <option value="8" >Subtraction Blocks</option> <?php }
+			if($products & 0x10) { ?> <option value="16">Integer Blocks</option> <?php }
+			?> <option value="128">Facts Assessment</option> <?php
 		}
 		
 	}

@@ -41,12 +41,7 @@
 							<span class="name">Bulk Actions</span>
 							<input type="hidden" name="username" value="<?php echo '*.' . $groupName . '.' . $teacherDomain; ?>" />
 							<select id="bulk-product">
-								<?php if($products & 0x01) { ?> <option value="1" >Addition Blocks</option> <?php } ?>
-								<?php if($products & 0x02) { ?> <option value="2" >Multiplication Blocks</option> <?php } ?>
-								<?php if($products & 0x04) { ?> <option value="4" >Percent Bingo</option> <?php } ?>
-								<?php if($products & 0x08) { ?> <option value="8" >Subtraction Blocks</option> <?php } ?>
-								<?php if($products & 0x10) { ?> <option value="16">Integer Blocks</option> <?php } ?>
-                                <option value = "128">Facts Assessment</option>
+								<?php Element::productSelectInput($products); ?>
 							</select>
 							<div class="links">
 								<a class="settings-toggle" data-id="0" class="icon-lock" data-toggle="tooltip" data-gravity="s" title="Settings">

@@ -115,6 +115,67 @@ CheckboxInput = function(json) {
 	}
 }
 
+// Reusable select input prototype
+SelectInput = function(json) {
+	var json = json || {};
+	var _this = this;
+	
+	var tempParent = document.createElement("div");
+	
+	if (json instanceof Element) {
+		// Load JSON from wrapper element
+		var elem = this.wrapper = json;
+		while (elem.firstChild) {
+			tempParent.appendChild(elem.firstChild);
+		}
+		json = {};
+		$(elem).removeClass("select-input");
+		$(elem).addClass("select-input-wrapper");
+		json.id = elem.id;
+		json.label = elem.getAttribute("data-label");
+		json.name = elem.getAttribute("data-name");
+		var elem_placeholder = elem.getAttribute("data-placeholder");
+		json.placeholder = !(elem_placeholder === 'false' ||
+			elem_placeholder == null);
+		json.type = elem.getAttribute("data-type");
+		json.value = elem.getAttribute("data-value");
+	}/* else {
+		// Create wrapper element
+		var elem = this.wrapper = document.createElement("select");
+		elem.className = "select-input-wrapper";
+		elem.setAttribute("data-type", json.type || "text");
+		if (json.id) {
+			elem.id = json.id;
+		}
+	}*/
+
+	if (!json.id) {
+		this.wrapper.id = json.id = "select-field-" + (select_input_counter ++);
+	}
+
+	// Create children
+	if (json.label) {	// Label
+		var elem = this.label = document.createElement("label");
+		elem.setAttribute("for", json.id + "-input");
+		$(elem).text(json.label);
+		if (json.placeholder) {
+			$(elem).addClass("placeholder");
+		}
+		this.wrapper.appendChild(elem);
+	}
+	{	// Select
+		var elem = this.input = document.createElement("select");
+		while (tempParent.firstChild) {
+			elem.appendChild(tempParent.firstChild);
+		}
+		elem.className = "select-input";
+		elem.id = json.id + "-input";
+		if (json.value) elem.value = json.value;
+		elem.name = json.name || "";
+		this.wrapper.appendChild(elem);
+	}
+}
+
 // Reusable big button prototype
 BigButton = function(json) {
 	var json = json || {};
@@ -212,6 +273,7 @@ BigButton = function(json) {
 // Keep track of how many inputs exist without custom id's
 text_input_counter = 0;
 checkbox_input_counter = 0;
+select_input_counter = 0;
 
 // Convert placeholder input elements into actual input elements
 $(window).ready(function() {
@@ -220,6 +282,9 @@ $(window).ready(function() {
 	});
 	$(".checkbox-input").each(function() {
 		new CheckboxInput(this);
+	});
+	$(".select-input").each(function() {
+		new SelectInput(this);
 	});
 	$(".big-button").each(function() {
 		new BigButton(this);
