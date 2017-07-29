@@ -68,7 +68,7 @@
 
 		'live' => true,
 		'maintenance' => false,
-		'version' => '1.1.060617 beta',
+		'version' => '1.1.073117 beta',
 		
 		'url' => array(
 			

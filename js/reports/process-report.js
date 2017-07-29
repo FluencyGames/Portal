@@ -2,6 +2,13 @@
 
 // includes math.js
 
+//
+//  Changes:
+//
+//  07-27-17:   Forced casting values from JSON structure to numeric
+//
+//
+
 var ADBG = { PRACTICE:	0, NORMAL:	1, TIMED: 		2, CONTINOUS: 3, CHALLENGE: 4 };
 var MX	 = { NORMAL:	1, TIMED:	1, PRACTICE:	2, CHALLENGE: 3 };
 
@@ -72,7 +79,7 @@ function adbg_game_data(stream) {
 				games[i]['EndCode'] = endCode;
                 games[i]['Score'] = score;
                 // did not have this data in binary file
-				games[i]['Attemtps'] = 0;
+				games[i]['Attempts'] = 0;
                 games[i]['Success'] = 0;
 			}
 		}
@@ -98,6 +105,7 @@ function adbg_process_game_data(theStudent, stream) {
 					DevScore		:0,
 					DevPtsPerSec	:0,
 					DevLastScore	:0,
+                    DevLastGameAccuracy: 0,
 					DevLastPtsPerSec:0,
 					OutliersAvg		:[],
 					OutliersPtsPerSec:[]
@@ -141,7 +149,7 @@ function adbg_process_game_data(theStudent, stream) {
         numGames++;
         points += Number(game['Score']);
         total_time += Number(game['Time']);
-        summary.Attempts += Number(game['Attemtps']);
+        summary.Attempts += Number(game['Attempts']);
         summary.Success += Number(game['Success']);
 
         // not in our origianl data, we will need this to calculate some data
@@ -157,30 +165,39 @@ function adbg_process_game_data(theStudent, stream) {
             summary.Accuracy = (summary.Success / summary.Attempts);
         
         summary.LastGameDate = theGames[numGames-1]['Date'];
-        summary.LastGameScore = theGames[numGames-1]['Score'];
-        summary.LastGamePtsPerSec = ( summary.LastGameScore / theGames[numGames-1]['Time']);
-        if(theGames[numGames-1]['Attemtps']>0)        
-            summary.LastGameAccuracy = ( theGames[numGames-1]['Success']/theGames[numGames-1]['Attemtps']);
+        summary.LastGameScore = Number(theGames[numGames-1]['Score']);
+        summary.LastGamePtsPerSec = ( summary.LastGameScore / Number(theGames[numGames-1]['Time']));
+        if(Number(theGames[numGames-1]['Attempts'])>0)        
+            summary.LastGameAccuracy = ( Number(theGames[numGames-1]['Success'])/Number(theGames[numGames-1]['Attempts']));
     }
     
 	//
 	// analyze recent trends
 	//
 	if(numGames>3) {
+        console.log(theGames);
+        console.log(summary);
+        
 		var recentScore = theGames.sumField('Score', numGames-3);
 		var recentTime  = theGames.sumField('Time', numGames-3);
-		
+        var recentAccuracy = 0.0;
+        
 		var recentScoreAvg = recentScore/3;
 		var recentSpeed = recentScore/recentTime;
+        if(theGames.sumField('Attempts', numGames-3)>0)
+		      recentAccuracy  = theGames.sumField('Success', numGames-3) / theGames.sumField('Attempts', numGames-3);
 		
 		var madScore = theGames.mad( summary.Avg, 'Score');
 		var madSpeed = theGames.mad( summary.PtsPerSec, 'PtsPerSec' );
-		
+		var madAccu  = theGames.mad( summary.Accuracy, 'Accuracy');
+        
 		summary.DevScore 		= recentScoreAvg.spread(summary.Avg, madScore);
 		summary.DevPtsPerSec 	= recentSpeed.spread(summary.PtsPerSec, madSpeed);
+        summary.DevAccuracy     = recentAccuracy.spread(summary.Accuracy, madAccu);
 		
 		summary.DevLastScore 	= summary.LastGameScore.spread(summary.Avg, madScore);
 		summary.DevLastPtsPerSec = summary.LastGamePtsPerSec.spread(summary.PtsPerSec, madSpeed);
+        summary.DevLastAccuracy = summary.LastGameAccuracy.spread(summary.Accuracy, madAccu);
 	}
 	
 	//console.log(summary);
@@ -243,11 +260,11 @@ function adbg_progress_data(stream) {
 function adbg_process_progress_data(theStudent, stream) {
 //	console.log("adbg_process_progess_data");
     
-	var summary = { NumberOfSums:	0,
-					successRate:	0,
-					secPerSum:		0,
-					combosPerSum:	0,
-					sums:			[],
+	var summary = { NumberOfItems:	0,
+					AccuracyPerItem:    	0,
+					secPerItem:		0,
+					combosPerItem:	0,
+					items:			[],
 				};
 				
 	var totalSuccess = 0;
@@ -269,7 +286,10 @@ function adbg_process_progress_data(theStudent, stream) {
         theData = adbg_progress_data(stream);
     else  {
         var items = JSON.parse( stream );
-        for(var item in items) { items[item]['Sum'] = item; theData.push(items[ item ]); }
+        for(var item in items) { 
+            items[item]['sum'] = item;
+            theData.push(items[ item ]); 
+        }
     }
 
     // console.log(theData);
@@ -282,11 +302,11 @@ function adbg_process_progress_data(theStudent, stream) {
         if(theData.hasOwnProperty(key)) {
 
             var sum = theData[key];
-            var index = Number(sum['Sum']);
+            var index = Number(sum['sum']);
 
-            var success = sum['1'];
-            var missed	= sum['x'];
-            var time 	= sum['tt'];
+            var success = Number(sum['1']);
+            var missed	= Number(sum['x']);
+            var time 	= Number(sum['tt']);
             var combos	= sum['c'];
             var ncombos = num_keys(combos);
 
@@ -295,7 +315,7 @@ function adbg_process_progress_data(theStudent, stream) {
             totalCombos += ncombos;
             totalTime	+= time;
 
-            summary.NumberOfSums += (success+missed>0?1:0);
+            summary.NumberOfItems += (success+missed>0?1:0);
 
             if( success > 0) {
                 sum['Accuracy'] = success / (success+missed);
@@ -303,14 +323,14 @@ function adbg_process_progress_data(theStudent, stream) {
                 sum['NumCombos'] = ncombos;
             }
 
-            summary.sums[index] = sum;
+            summary.items[index] = sum;
         }
     }
     
-	if(summary.NumberOfSums > 0) {
-		summary.successRate = totalSuccess/(totalSuccess + totalMissed);
-		summary.secPerSum	= (totalTime/totalSuccess);
-		summary.combosPerSum= (totalCombos/summary.NumberOfSums);
+	if(summary.NumberOfItems > 0) {
+		summary.AccuracyPerItem = totalSuccess/(totalSuccess + totalMissed);
+		summary.secPerItem	  = (totalTime/totalSuccess);
+		summary.combosPerItem = (totalCombos/summary.NumberOfItems);
 	
 	}
     
@@ -406,8 +426,10 @@ function mx_process_game_data(theStudent, stream) {
                     LastGameAccuracy:0,
 					DevScore		:0,
 					DevPtsPerSec	:0,
+                    DevAccuracy     :0,
 					DevLastScore	:0,
 					DevLastPtsPerSec:0,
+                    DevLastAccuracy :0,
 					OutliersAvg		:[],
 					OutliersPtsPerSec:[]
 					};
@@ -463,10 +485,10 @@ function mx_process_game_data(theStudent, stream) {
             summary.Accuracy = (summary.Success / summary.Attempts);
         
         summary.LastGameDate = theGames[numGames-1]['Date'];
-        summary.LastGameScore = theGames[numGames-1]['Score'];
+        summary.LastGameScore = Number(theGames[numGames-1]['Score']);
         summary.LastGamePtsPerSec = ( summary.LastGameScore / theGames[numGames-1]['Time']);
-        if(theGames[numGames-1]['Attempts']>0)
-            summary.LastGameAccuracy = ( theGames[numGames-1]['Success']/theGames[numGames-1]['Attempts']);
+        if(Number(theGames[numGames-1]['Attempts'])>0)
+            summary.LastGameAccuracy = ( Number(theGames[numGames-1]['Success'])/Number(theGames[numGames-1]['Attempts']));
     }
     
 	//
@@ -475,18 +497,24 @@ function mx_process_game_data(theStudent, stream) {
 	if(numGames>3) {
 		var recentScore = theGames.sumField('Score', numGames-3);
 		var recentTime  = theGames.sumField('Time', numGames-3);
-		
+        var recentAccuracy = 0.0;
+        
 		var recentScoreAvg = recentScore/3;
 		var recentSpeed = recentScore/recentTime;
+        if(theGames.sumField('Attempts', numGames-3)>0)
+		      recentAccuracy  = theGames.sumField('Success', numGames-3) / theGames.sumField('Attempts', numGames-3);
 		
 		var madScore = theGames.mad( summary.Avg, 'Score');
 		var madSpeed = theGames.mad( summary.PtsPerSec, 'PtsPerSec' );
-		
+		var madAccu  = theGames.mad( summary.Accuracy, 'Accuracy');
+        
 		summary.DevScore 		= recentScoreAvg.spread(summary.Avg, madScore);
 		summary.DevPtsPerSec 	= recentSpeed.spread(summary.PtsPerSec, madSpeed);
+        summary.DevAccuracy     = recentAccuracy.spread(summary.Accuracy, madAccu);
 		
 		summary.DevLastScore 	= summary.LastGameScore.spread(summary.Avg, madScore);
 		summary.DevLastPtsPerSec = summary.LastGamePtsPerSec.spread(summary.PtsPerSec, madSpeed);
+        summary.DevLastAccuracy = summary.LastGameAccuracy.spread(summary.Accuracy, madAccu);
 	}
 	
 	console.log(summary);
@@ -549,11 +577,11 @@ function mx_progress_data(theData) {
 function mx_process_progress_data(theStudent, stream) {
 	console.log("mx_process_progess_data");
     
-	var summary = { NumberOfProducts:  0,
-					successRate:       0,
-					secPerProduct:     0,
-					combosPerProduct:  0,
-					products:		   [],
+	var summary = { NumberOfItems:	0,
+					AccuracyPerItem:    	0,
+					secPerItem:		0,
+					combosPerItem:	0,
+					items:			[],
 				};
 				
 	var totalSuccess = 0;
@@ -575,11 +603,15 @@ function mx_process_progress_data(theStudent, stream) {
         theData = mx_progress_data(stream);
     else  {
         var items = JSON.parse( stream );
-        for(var item in items) { items[item]['product'] = item; theData.push(items[ item ]); }
+        for(var item in items) {
+            items[item]['product'] = item; 
+            theData.push(items[ item ]); 
+        }
     }
 
     // save the data for later
     theStudent.progressData = theData;
+    console.log(theData);
     
     for(var key in theData) {
         
@@ -592,9 +624,9 @@ function mx_process_progress_data(theStudent, stream) {
 
             //product['Product'] = index;
 
-            var success = product['1'];
-            var missed	= product['x'];
-            var time 	= product['tt'];
+            var success = Number(product['1']);
+            var missed	= Number(product['x']);
+            var time 	= Number(product['tt']);
             var combos	= product['c'];
             var ncombos = num_keys(combos);
 
@@ -603,7 +635,7 @@ function mx_process_progress_data(theStudent, stream) {
             totalCombos += ncombos;
             totalTime	+= time;
 
-            summary.NumberOfProducts += (success+missed>0?1:0);
+            summary.NumberOfItems += (success+missed>0?1:0);
 
             if( success > 0) {
                 product['Accuracy'] = success / (success+missed);
@@ -612,15 +644,15 @@ function mx_process_progress_data(theStudent, stream) {
             }
 
 //            summary.products[index] = product;
-            summary.products.push( product );
+            summary.items.push( product );
               
         }
     }
     
-	if(summary.NumberOfProducts > 0) {
-		summary.successRate       = totalSuccess/(totalSuccess + totalMissed);
-		summary.secPerProduct     = (totalTime/totalSuccess);
-		summary.combosPerProduct  = (totalCombos/summary.NumberOfProducts);
+	if(summary.NumberOfItems > 0) {
+		summary.AccuracyPerItem   = totalSuccess/(totalSuccess + totalMissed);
+		summary.secPerItem        = (totalTime/totalSuccess);
+		summary.combosPerItem     = (totalCombos/summary.NumberOfItems);
 	
 	}
     
@@ -661,18 +693,18 @@ function bingo_game_data(stream) {
 	
 	Object.keys(o).map(function(key) { 
 		games[i] = {};
-		games[i].Date = o[key].Date;
-		games[i].Time = o[key].Time;
-		games[i].GameCode = o[key].GameCode;
-		games[i].EndCode = o[key].EndCode;
-		games[i].Score = o[key].Score;
-		games[i].AdaptivePlayLevel = o[key].AdaptivePlayLevel;
-		games[i].FractionAttempts = o[key].FractionAttempts;
-		games[i].FractionCorrect = o[key].FractionCorrect;
-		games[i].FractionTime = o[key].FractionTime;
-		games[i].DecimalAttempts = o[key].DecimalAttempts;
-		games[i].DecimalCorrect = o[key].DecimalCorrect;
-		games[i].DecimalTime = o[key].DecimalTime;
+		games[i].Date             = o[key].Date;
+		games[i].Time             = Number(o[key].Time);
+		games[i].GameCode         = Number(o[key].GameCode);
+		games[i].EndCode          = Number(o[key].EndCode);
+		games[i].Score            = Number(o[key].Score);
+		games[i].AdaptivePlayLevel = Number(o[key].AdaptivePlayLevel);
+		games[i].FractionAttempts = Number(o[key].FractionAttempts);
+		games[i].FractionCorrect  = Number(o[key].FractionCorrect);
+		games[i].FractionTime     = Number(o[key].FractionTime);
+		games[i].DecimalAttempts  = Number(o[key].DecimalAttempts);
+		games[i].DecimalCorrect   = Number(o[key].DecimalCorrect);
+		games[i].DecimalTime      = Number(o[key].DecimalTime);
 		i++;
 	});
 		
@@ -680,30 +712,32 @@ function bingo_game_data(stream) {
 }
 
 function bingo_process_game_data(theStudent, stream) {
-	var summary = { NumberOfGames	:0,
-					Avg				:0,
-					PtsPerSec		:0,
-					MaxLevel		:0,
-					AllAccuracy		:0,
-					FracAccuracy	:0,
-					DecAccuracy		:0,
-					LastDate		:0,
-					LastScore		:0,
-					LastPtsPerSec	:0,
-					LastAllAccuracy	:0,
-					LastFracAccuracy:0,
-					LastDecAccuracy :0,
+	var summary = { NumberOfGames      :0,
+					Avg                :0,
+					PtsPerSec          :0,
+					MaxLevel		   :0,
+					Accuracy		   :0,
+					FracAccuracy	   :0,
+					DecAccuracy		   :0,
+					LastGameDate		:0,
+					LastGameScore		:0,
+					LastGamePtsPerSec	:0,
+					LastGameAccuracy	:0,
+					LastGameFracAccuracy:0,
+					LastGa,eDecAccuracy :0,
 					DevScore		:0,
 					DevPtsPerSec	:0,
+                    DevAccuracy     :0,
 					DevFracAccuracy	:0,
 					DevDecAccuracy	:0,
 					DevLastScore	:0,
 					DevLastPtsPerSec:0,
+                    DevLastAccuracy :0,
 					DevLastFracAccuracy:0,
 					DevLastDecAccuracy:0,
 					OutliersAvg		:[],
 					OutliersPtsPerSec:[],
-					games			:[]
+                    games           :[]
 					};
 					
 	summary.games = bingo_game_data(stream);
@@ -741,7 +775,7 @@ function bingo_process_game_data(theStudent, stream) {
 		summary.PtsPerSec = (totalScore / totalTime );
 			
 		if(totalFractionAttempts + totalDecimalAttempts > 0)
-			summary.AllAccuracy	= (totalFractionCorrect + totalDecimalCorrect) / (totalFractionAttempts + totalDecimalAttempts);
+			summary.Accuracy	= (totalFractionCorrect + totalDecimalCorrect) / (totalFractionAttempts + totalDecimalAttempts);
 			
 		if(totalFractionAttempts > 0)
 			summary.FracAccuracy = (totalFractionCorrect) / (totalFractionAttempts);
@@ -750,18 +784,18 @@ function bingo_process_game_data(theStudent, stream) {
 			summary.DecAccuracy	= (totalDecimalCorrect) / (totalDecimalAttempts);
 		
 		var game = summary.games[summary.NumberOfGames-1];
-		summary.LastDate = game.Date;
-		summary.LastScore = game.Score;
-		summary.LastPtsPerSec = game.Score / game.Time;
+		summary.LastGameDate = game.Date;
+		summary.LastGameScore = game.Score;
+		summary.LastGamePtsPerSec = game.Score / game.Time;
 		
 		if(game.FractionAttempts + game.DecimalAttempts > 0)		
-			summary.LastAllAccuracy = (game.FractionCorrect + game.DecimalCorrect)/(game.FractionAttempts + game.DecimalAttempts);
+			summary.LastGameAccuracy = (game.FractionCorrect + game.DecimalCorrect)/(game.FractionAttempts + game.DecimalAttempts);
 			
 		if(game.FractionAttempts > 0)		
-			summary.LastFracAccuracy = (game.FractionCorrect)/(game.FractionAttempts);
+			summary.LastGameFracAccuracy = (game.FractionCorrect)/(game.FractionAttempts);
 			
 		if(game.DecimalAttempts > 0)		
-			summary.LastDecAccuracy = (game.DecimalCorrect)/(game.DecimalAttempts);
+			summary.LastGameDecAccuracy = (game.DecimalCorrect)/(game.DecimalAttempts);
 	}
 	
 	if(summary.NumberOfGames > 3) {
@@ -781,20 +815,25 @@ function bingo_process_game_data(theStudent, stream) {
 		
 		var recentAvg = recentScore / 3;
 		var recentPtsPerSec = recentScore / recentTime;
+        var recentAccuracy = 0; 
 		var recentFractionAccuracy = 0;
 		var recentDecimalAccuracy = 0;
 		
 		if(fAtt>0) recentFractionAccuracy = fCorr/fAtt;
 		if(dAtt>0) recentDecimalAccuracy = dCorr/dAtt;
-		
+		if(fAtt + dAtt>0) recentAccuracy = fCorr + dCorr / (fAtt +dCorr);
+        
 		var madScore = summary.games.mad(summary.Avg, "Score");
 		var madSpeed = summary.games.mad(summary.PtsPerSec, "Time");
+        var madAccu  = summary.games.mad(summary.Accuracy, "Accuracy");
 		
 		summary.DevScore = recentAvg.spread( summary.Avg, madScore );
-		summary.DevPtsPerSec = recentPtsPerSec( summary.PtsPerSec, madSpeed );
-		
+		summary.DevPtsPerSec = recentPtsPerSec.spread( summary.PtsPerSec, madSpeed );
+		summary.DevAccuracy = recentAccuracy.spread(summary.Accuracy, madAccuracy);
+        
 		summary.DevLastScore = summary.LastScore.spread( summary.Avg, madScore);
 		summary.DevLastPtsPerSec = summary.LastPtsPerSec.spread( summary.PtsPerSec, madSpeed);
+        summary.DevLastAccuracy = summary.LastAccuracy.spread( summary.Accuracy, madAccuracy);
 		
 	}		
 	
@@ -825,8 +864,10 @@ var AdaptivePlayLevels = [ "Beginner",
 				
 function bingo_process_progress_data(theStudent, stream) {
 	
-	var summary = { totalAccuracy:		0,
-					totalSpeed:			0,
+	var summary = { NumberOfItems:      0,
+                    AccuracyPerItem:    0,
+					SecPerItem:			0,
+                    combosPerItem:      0,
 					decAccuracy:		0,
 					decSpeed:			0,
 					fracAccuracy:		0,
@@ -868,6 +909,8 @@ function bingo_process_progress_data(theStudent, stream) {
 		i++;
 	});
 	
+    summary.NumberOfItems = i-1;
+    
 	var totalFracAttempts = summary.fractions.sum("ATT");
 	var totalFracSuccess = summary.fractions.sum("SUCCESS");
 	var totalFracTime = summary.fractions.sum("TIME");
@@ -879,8 +922,8 @@ function bingo_process_progress_data(theStudent, stream) {
 	//console.log(summary.fractions);
 	//console.log(summary.decimals);
 	
-	summary.totalAccuracy = (totalFracSuccess + totalDecAttempts)/(totalFracSuccess + totalDecAttempts);
-	summary.totalSpeed = (totalFracTime + totalDecTime) / (totalFracSuccess + totalDecSuccess);
+	summary.AccuracyPerItem = (totalFracSuccess + totalDecSuccess)/(totalFracAttempts + totalDecAttempts);
+	summary.SecPerItem = (totalFracTime + totalDecTime) / (totalFracSuccess + totalDecSuccess);
 	
 	if(totalFracAttempts>0) summary.fracAccuracy = (totalFracSuccess/totalFracAttempts);
 	if(totalFracSuccess>0)	summary.fracSpeed 	= (totalFracTime/totalFracSuccess);

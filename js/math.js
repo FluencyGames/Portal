@@ -1,3 +1,10 @@
+//
+//  Changes:
+//
+//  07-27-17:   Changed math functions acting on array columns to force to Number()
+//
+//
+
 Number.prototype.round = function(places) {
   return (Math.round(this + "e+" + places)  + "e-" + places);
 }
@@ -19,7 +26,7 @@ Array.prototype.mean = function( col=undefined ) {
 	var cnt=0;
 	
 	if(useCol)
-		this.forEach( function(a) { sum+=a[col]; cnt++; });
+		this.forEach( function(a) { sum+=Number(a[col]); cnt++; });
 	else
 		this.forEach( function(n) { sum+=n; cnt++;	});
 	
@@ -35,7 +42,7 @@ Array.prototype.max = function( col=undefined ) {
 	var maxValue = -1;
 		
 	if(useCol)
-		this.forEach( function(a) { maxValue = Math.max(maxValue, a[col]); });
+		this.forEach( function(a) { maxValue = Math.max(maxValue, Number(a[col])); });
 	else
 		this.forEach( function(n) { maxValue = Math.max(maxValue, n);	});
 	
@@ -59,7 +66,7 @@ Array.prototype.sum = function( field=undefined ) {
 	var sum=0;
 	
 	if(field!==undefined)
-		this.forEach( function(a) { sum+=a[field]; });
+		this.forEach( function(a) { sum+=Number(a[field]); });
 	else
 		this.forEach( function(n) { sum+=n; });
 	
@@ -71,7 +78,7 @@ Array.prototype.sumField = function( field, start=0, end=undefined ) {
 	var sum=0;
 	
 	for(var i=start;i<last;i++) {
-        sum += this[i][field];
+        sum += Number(this[i][field]);
     }
 	
 	return sum;
@@ -87,7 +94,7 @@ Array.prototype.mad = function( mean=undefined, col=undefined ) {
 	var cnt=0;
 	
 	if(col!==undefined)
-		this.forEach(function(a) { if(a[col]>0) { cnt++; sum+=Math.abs(a[col] - xbar); } });
+		this.forEach(function(a) { if(Number(a[col])>0) { cnt++; sum+=Math.abs(Number(a[col]) - xbar); } });
 	else
 		this.forEach(function(n) { if(n>0)      { cnt++; sum+=Math.abs(n-xbar); } } );
 	
@@ -107,7 +114,7 @@ Array.prototype.variance = function(mean=undefined, col=undefined) {
 	var cnt=0;
 	
 	if(col!==undefined)
-		this.forEach(function(a) { if(a[col] > 0) { cnt++; sum+=(a[col] - xbar)*(a[col] - xbar); } } );
+		this.forEach(function(a) { if(Number(a[col]) > 0) { cnt++; sum+=(Number(a[col]) - xbar)*(Number(a[col]) - xbar); } } );
 	else
 		this.forEach(function(n) { if(n>0)        { cnt++; sum+=(n-xbar)*(n - xbar); } });
 	
@@ -130,7 +137,7 @@ function mad_from_array_objects(a, key, xbar, ncludeZeros) {
 	a.forEach( function(o) {
 		if(o[key]>0 || (o[key]==0 && ncludeZeros)) {
 			cnt++;
-			sum+=Math.abs(o[key]-xbar);
+			sum+=Math.abs(Number(o[key])-xbar);
 		}
 	});
 	

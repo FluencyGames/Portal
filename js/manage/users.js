@@ -485,10 +485,10 @@ Slot = function(type) {
 		
 		// User changes value in any field, copy the new data to the user data structure
 		$(t.input).on('input', function(e) {
-			var i = $(this).attr("data-info-id");
-			$this.user.info[i] = $(this).val().trim().replace(/\s/g,'');
-			if(i=='First name' || i=='Last name')
-				$this.updateUsername();
+			var inputKey = $(this).attr("data-info-id");
+			$this.user.info[inputKey] = $(this).val().trim().replace(/\s/g,'');
+            if(inputKey=='First name' || inputKey == 'Last name')
+			     $this.updateUsername();
 			$this.updateTitle();
 			$this.updateLoginAs();
 			if ($this.getState() == states.unedited) {
@@ -707,35 +707,35 @@ Slot.prototype.updateUsername = function() {
 	// Teachers types need to have full email as their username, so no special processing is needed.
 	// Student types we can auto-generate based on first/last name
 	//
+
 	if(userType == "student") {
-		if (this.user.originalInfo['Username'] == '') { 
-			var username = this.user.info['First name'].trim().toLowerCase().charAt(0) + this.user.info['Last name'].trim().toLowerCase();
-			if(username.length>0) {
-				username = username.replace(/^"|"$/g,'');
-				this.usernameInput.val(username);
-				this.user.info['Username'] = username + '@' + this.user.info['Group'] + '.' + domain;
-			}
-		} else {
-			var username = this.user.info['Username'];
-			parts = username.split('@');
-			this.user.info['Username'] = parts[0].trim().replace(/\s/g,'') + '@' + this.user.info['Group'] + '.' + domain
-			this.usernameInput.val(parts[0]);
-		}
+        console.log("UpdateUsername");
+        
+        var username = '';
+		if (this.user.originalInfo['Username'] == '')
+			username = this.user.info['First name'].trim().toLowerCase().charAt(0) + this.user.info['Last name'].trim().toLowerCase();
+        else
+			username = this.user.info['Username'].split('@')[0];
+            
+       if(username.length>0)
+            this.usernameInput.val(username);
+            
+        console.log(this.user.info);
 	}
+    
 }
 
 Slot.prototype.updateLoginAs = function() {
 	if(userType == "student") {
-		var user = this.user.info['Username'];
-		var loginAs = '';
-		if(user != '') {
-			var parts = user.split('@');
-			loginAs = parts[0].trim().replace(/\s/g,'') + '@' + this.user.info['Group'] + '.' + domain;
-		} else {
-		    loginAs = this.user.info['First name'].charAt(0) + this.user.info['Last name'].trim().replace(/^"|"$/g,'') + '@' + this.user.info['Group'] + '.' + domain;
-		}
-		$("#" + this.type + "-slot-" + this.id + " #login-as").html('Login: ' + loginAs.toLowerCase());
+		var username = this.usernameInput.val();
+        this.user.info['Username'] = username.trim().replace(/\s/g,'') + '@' + this.user.info['Group'] + '.' + domain;
+
+        console.log("UpdateLoginAs: user=" + this.user.info['Username']);
+        
+        if(username.length>0)
+		  $("#" + this.type + "-slot-" + this.id + " #login-as").html('Login: ' + this.user.info['Username']);
 	}
+    
 }
 
 Slot.prototype.hide = function(term) {
