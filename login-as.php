@@ -37,5 +37,5 @@
 	if (isset($_GET['page']))
 		header('location: ' . $_GET['page']);
 	else
-		header('location: home');
+		Element::redirectUsersToHome();
 ?>

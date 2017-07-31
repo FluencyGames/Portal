@@ -582,31 +582,17 @@
 			return $notifications;
 		}
 		
-		public static function getHomePage() {
-			$userType = User::getCurrentUser()->getColumn('UserType');
-			$loc = 'home';
-				
-			if (User::loggedIn()) {
-				switch($type) {
-					case FLUENCY_GAMES_ADMIN:
-					default: 
-						$loc = "fg";
-						break;
-						
-					case EDUCATIONAL_ADMIN: 
-						$loc = "manage/teachers";
-						break; 
-						
-					case TEACHER: 
-					case TEACHER_ADMIN: 
-					case PARENT_GUARDIAN: 
-						$loc = "manage/students";
-						break;
-				}
-			}
-			
-			return Config::get('documentroot') . $loc;
+		public function getHomePage() {
+			// TODO(bret): Get this from the database!
+			return 'snapshot';
+		}
 		
+		public function getTeacherOptions() {
+			// TODO(bret): Get this from the database!
+			return array(
+				'page' => $this->getHomePage(),
+				'product' => 3,
+			);
 		}
 		
 		public static function sendLicenseToNewUser( $email, $data ) {

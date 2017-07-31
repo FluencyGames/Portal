@@ -38,7 +38,7 @@
 								</div>
 								<div class="row">
 									<div class="col-xs-12 col-md-6">
-										<div class="big-button" data-href="#" data-icon="download">Manage Rosters</div>
+										<div class="big-button" data-href="#" data-icon="download">Manage Roster</div>
 									</div>
 									<div class="col-xs-12 col-md-6">
 										<div class="big-button" data-href="#" data-icon="download">Manage Students</div>

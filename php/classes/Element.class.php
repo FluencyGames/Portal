@@ -8,7 +8,8 @@
 			// 12-21-15 mse updated to redirect logged in user to 
 			// specific home page
 			//
-			$userType = User::getCurrentUser()->getColumn('UserType');
+			$user = User::getCurrentUser();
+			$userType = $user->getColumn('UserType');
 			$loc = 'home';
 				
 			if (User::loggedIn()) {
@@ -28,11 +29,12 @@
 					case TEACHER: 
 					case TEACHER_ADMIN: 
 					case PARENT_GUARDIAN: 
-						$loc = 'manage/students';
+						$page = $user->getHomePage();
+						$loc = "manage/{$page}";
 						break;
 				}
 				header('location: ' . Config::get('documentroot') . $loc);
-				die();			
+				die();
 			}
 		}			
 
@@ -153,7 +155,7 @@
 			<?php
 				$user = User::getCurrentUser();
 				if ($user->isValid())
-					echo 'Logged in as ' . $user->getDisplayUsername();
+					echo 'Logged in as ' . $user->getDisplayUsername() . ' | <a href="' . $documentroot . 'login-as">Home</a>';
 				else
 					echo 'Not Logged in.'
 			?>
