@@ -16,6 +16,8 @@
 	$groupName = $user->getColumn('Groups');
 	
 	$students = $user->getStudents('ORDER BY Lname ASC, Fname ASC');
+	
+	$defaults = $user->getTeacherOptions();
 ?>
 <!DOCTYPE html>
 <html>
@@ -45,9 +47,15 @@
 						<div class="snapshot product" data-id="0">
 							<span class="name">Select Product:</span>
 							<input type="hidden" name="username" value="<?php echo '*.' . $groupName . '.' . $teacherDomain; ?>" />
-							<select id="product" class="right-aligned-products">
+							
+							<div class="select-input right-aligned-products" data-name="product" data-value="<?php echo $defaults['product']; ?>">
 								<?php Element::productSelectInput($products); ?>
-							</select>
+							</div>
+							
+							
+							<!--<select id="product-old" class="right-aligned-products">
+								<?php Element::productSelectInput($products); ?>
+							</select>-->
 						</div>
 						
 						<div class="snapshot">
@@ -99,7 +107,12 @@
 				echo "createSnapshot($json);" . PHP_EOL;
 			}
 		?>
-		loadSnapshots(1);
+		loadSnapshots(<?php echo $defaults['product']; ?>);
+		
+		registerOnChange('#product', function(e) {
+			var product = parseInt($(e).val());
+			loadSnapshots(product);
+		});
 	</script>
 </body>
 </html>

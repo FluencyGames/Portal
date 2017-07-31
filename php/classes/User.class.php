@@ -591,7 +591,7 @@
 			// TODO(bret): Get this from the database!
 			return array(
 				'page' => $this->getHomePage(),
-				'product' => 3,
+				'product' => 1,
 			);
 		}
 		

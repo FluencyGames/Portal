@@ -143,7 +143,6 @@ Snapshot.prototype.update = function(newData, product) {
 		};
 		
 		var processedGameData = processGameData(theStudent, newData);
-		console.log(theStudent.summary);
 		
 		var scores = [
 			theStudent.summary.PtsPerSec,
@@ -159,7 +158,6 @@ Snapshot.prototype.update = function(newData, product) {
 			theStudent.summary.DevLastAccuracy,
 		];
 		
-		console.log(scores);
 		this.updateScores(scores);
 		this.updateTrends(trends);
 	}
@@ -178,17 +176,9 @@ function loadSnapshots(product) {
 		},
 		success: function(result) {
 			students = result.students;
-			console.log(students);
-			console.log(students[8]);
 			for (var key in students) {
 				snapshots[parseInt(key)].update(students[key], product);
 			}
-			/*console.log('\n\nupdating 7');
-			snapshots[7].update(students['7'], product);
-			console.log('\n\nupdating 8');
-			snapshots[8].update(students['8'], product);
-			console.log('\n\nupdating 617');
-			snapshots[617].update(students['617'], product);*/
 		},
 		error: function(result) {
 			//alert("Index.php: Line 27, " + result['responseText']);
