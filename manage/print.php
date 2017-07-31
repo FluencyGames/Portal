@@ -12,7 +12,7 @@
 	switch ($teacherOrStudent) {
 		case 'teachers': {
 			$LNameStr = 'LName';
-			$orderBy = "ORDER BY {$LNameStr} ASC";
+			$orderBy = "ORDER BY {$LNameStr} ASC, Fname ASC";
 			$items = $user->getTeachers($orderBy);
 			
 			$numItems = count($items);
@@ -20,7 +20,7 @@
 		
 		case 'students': {
 			$LNameStr = 'Lname';
-			$orderBy = "ORDER BY {$LNameStr} ASC";
+			$orderBy = "ORDER BY {$LNameStr} ASC, Fname ASC";
 			$items = $user->getStudents($orderBy);
 			
 			// Decode all the items
@@ -42,7 +42,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<title>Print Test</title>
+	<title>Fluency Games | Print <?php echo ucfirst($teacherOrStudent); ?></title>
 	<link href='https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700,800' rel='stylesheet' type='text/css'>
 	<link rel="stylesheet" type="text/css" href="<?php echo $documentroot; ?>css/grid.css">
 	<style type="text/css">
@@ -55,7 +55,7 @@
 		
 		html {
 			height: 100%;
-			background-color: #222299;
+			background-color: white;
 		}
 		
 		body {
@@ -63,6 +63,7 @@
 			width: 670px;
 			background-color: white;
 			min-height: 100%;
+			word-wrap: break-word;
 		}
 		
 		@media all {
@@ -71,20 +72,19 @@
 
 		@media print {
 			.page-break	{ display: block; page-break-before: always; }
-		}
-		
-		.names {
-			padding: 15px;
-		}
-		
-		.names .row {
-			height: 130px;
-		}
-		
-		.names .col-xs-3 {
-			word-wrap: break-word;
+			
+			.names {
+				padding: 15px;
+			}
+			
+			.names .row {
+				height: 130px;
+			}
 		}
 	</style>
+	<script type="text/javascript">
+		window.onload = function() { window.print(); }
+	</script>
 </head>
 <body>
 	<?php
@@ -99,8 +99,8 @@
 		<div class="row">
 			<div class="col-xs-3"><?php print($item[$LNameStr]); ?></div>
 			<div class="col-xs-3"><?php print($item['Fname']); ?></div>
-			<div class="col-xs-3"><?php print($item['Username']); ?></div>
-			<div class="col-xs-3">FOUR</div>
+			<div class="col-xs-6"><?php print($item['Username']); ?></div>
+			<!--<div class="col-xs-3">FOUR</div>-->
 		</div>
 	<?php
 			if ($i % 7 == 6) {
