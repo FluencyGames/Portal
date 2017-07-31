@@ -48,7 +48,7 @@
 							<span class="name">Select Product:</span>
 							<input type="hidden" name="username" value="<?php echo '*.' . $groupName . '.' . $teacherDomain; ?>" />
 							
-							<div class="select-input right-aligned-products" data-name="product" data-value="<?php echo $defaults['product']; ?>">
+							<div class="select-input right-aligned-products" id="product" data-name="product" data-value="<?php echo $defaults['product']; ?>">
 								<?php Element::productSelectInput($products); ?>
 							</div>
 							
@@ -109,7 +109,7 @@
 		?>
 		loadSnapshots(<?php echo $defaults['product']; ?>);
 		
-		registerOnChange('#product', function(e) {
+		registerOnChange('#product-input', function(e) {
 			var product = parseInt($(e).val());
 			loadSnapshots(product);
 		});

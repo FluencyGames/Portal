@@ -34,7 +34,7 @@
 						<div class="col-xs-12">
 							<div class="card">
 								<div class="head center">
-									RENAME
+									Quick Links
 								</div>
 								<div class="row">
 									<div class="col-xs-12 col-md-6">
