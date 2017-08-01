@@ -11,14 +11,6 @@ function createScorePair(scoreDiv, trendDiv, type) {
 	};
 }
 
-function createRangeInfo(min, max, inverse) {
-	return {
-		min: min,
-		max: max,
-		inverse: inverse,
-	};
-}
-
 Snapshot = function(data) {
 	var $this = this;
 	this.data = data;
@@ -87,7 +79,9 @@ Snapshot = function(data) {
 }
 
 // TODO(bret): Find a better, cleaner way to write all this, jeesh
-Snapshot.prototype.updateScores = function(scores, rangeInfo) {
+Snapshot.prototype.updateScores = function(scores, product) {
+	var rangeInfo = ranges[product];
+	
 	var scoreDiv;
 	var classToUse;
 	for (var s = 0; s < numScoresPerCol * 2; ++s) {
@@ -108,11 +102,15 @@ Snapshot.prototype.updateScores = function(scores, rangeInfo) {
 		var min = (isPPS) ? rangeInfo.ppsmin : rangeInfo.accmin;
 		var max = (isPPS) ? rangeInfo.ppsmax : rangeInfo.accmax;
 		
-		// TODO(bret): Make these use actual numbers
+		// NOTE(bret): This is currently hardcoded, gonna need to find a way to make it adjustable per product
+		var pointsAreSpeed = (product == 4);
+		var green = ' green icon-circle';
+		var red = ' red icon-circle';
+		
 		if (scores[s] >= max) {
-			classToUse += ' green icon-circle';
+			classToUse += (pointsAreSpeed) ? red : green;
 		} else if (scores[s] < min) {
-			classToUse += ' red icon-circle';
+			classToUse += (pointsAreSpeed) ? green : red;
 		} else {
 			classToUse += ' icon-circle-empty';
 		}
@@ -177,7 +175,7 @@ Snapshot.prototype.update = function(newData, product) {
 			theStudent.summary.DevLastAccuracy,
 		];
 		
-		this.updateScores(scores, ranges[product]);
+		this.updateScores(scores, product);
 		this.updateTrends(trends);
 	}
 }
