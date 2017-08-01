@@ -583,15 +583,14 @@
 		}
 		
 		public function getHomePage() {
-			// TODO(bret): Get this from the database!
-			return 'snapshot';
+			return $this->getColumn('DefaultPage');
 		}
 		
 		public function getTeacherOptions() {
 			// TODO(bret): Get this from the database!
 			return array(
 				'page' => $this->getHomePage(),
-				'product' => 1,
+				'product' => $this->getColumn('DefaultProduct'),
 			);
 		}
 		
@@ -607,6 +606,25 @@
 		
 		public function setupLicense( $licSettings ) {
 		    // adds school/group info to license data
+		}
+		
+		// Takes a range integer and converts it to its four values
+		public static function convertRanges($rangeData) {
+			return array(
+				'accmin' => ($rangeData) & 0xFF,
+				'accmax' => ($rangeData >> 8) & 0xFF,
+				'ppsmin' => ($rangeData >> 16) & 0xFF,
+				'ppsmax' => ($rangeData >> 24) & 0xFF,
+			);
+		}
+		
+		// Takes the accuracy and PPS min/max and converts them into the format stored by the database
+		public static function encodeRanges($accmin, $accmax, $ppsmin, $ppsmax) {
+			return ($accmin) | ($accmax << 8) | ($ppsmin << 16) | ($ppsmax << 24);
+		}
+		
+		public function getRanges($type) {
+			return self::convertRanges($this->getColumn($type));
 		}
 		
 	}

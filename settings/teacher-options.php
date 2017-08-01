@@ -11,8 +11,13 @@
 	$license = $user->getLicenseData();
 	$products = $license['Products'];
 	
-	$defaultPage = 'index';
-	$defaultProduct = 1;
+	$defaults = $user->getTeacherOptions();
+	
+	$ranges = array(
+		1 => $user->getRanges('AddRanges'),
+		2 => $user->getRanges('MultRanges'),
+		4 => $user->getRanges('PercRanges'),
+	);
 ?>
 <!DOCTYPE html>
 <html>
@@ -20,110 +25,53 @@
 	<?php Element::head("Fluency Games User Portal"); ?>
 	<script type="text/javascript">
 
-	registerOnClick("#parent-setup-form button", function() {
-		var group = $("#parent-setup-form [name=group]").val().toLowerCase().trim().replace(/\s/g,'');
-	    valid = isUniqueGroupName( group );
-				
-		if(valid) {
-			sendAjax({
-				url: "php/ajax/settings/update-account.php",
-				data: {
-				    License: '<?php echo $user->getColumn('license'); ?>',
-					Username: $("#account-setup-form [name=username]").val(),
-					Groups: group
-				},
-				success: function(result) {
-					console.log(result);
-					if (result['success']) {
-						alert("Settings Updated.");
-						refresh('index');
-					} else {
-						alert(result['error']);
-					}
-				}
-			});
+	function getProductName(id) {
+		var name = 'product';
+		switch (parseInt(id)) {
+			case 1:
+				name = 'AddRanges';
+				break;
+			case 2:
+				name = 'MultRanges';
+				break;
+			case 4:
+				name = 'PercRanges';
+				break;
 		}
-	});
+		return name;
+	}
 	
-	registerOnClick("#school-setup-form button", function() {
-	    valid = true;
-	    usrLevel = <?php echo $user->getColumn('UserType'); ?>;
+	registerOnClick("#teacher-options-form button", function() {
+		data = {
+			DefaultPage: $('[name=default-page]').val(),
+			DefaultProduct: $('[name=default-product]').val(),
+		};
 		
-		if(usrLevel == <?php echo EDUCATIONAL_ADMIN ?> || usrLevel == <?php echo TEACHER_ADMIN ?>) {
-			var domain_suffix = $("#school-setup-form [name=domainsuffix]").val().trim().replace(/\s/g,'');
-		    valid = isUniqueDomainSuffix(domain_suffix);
-			if(valid) {
-			    $.when( $.ajax( {
-		 					url: "../php/ajax/settings/update-license.php",
-							type: "POST",
-		 					data: {
-		 						DomainSuffix: domain_suffix
-		 					}
-		 				})).then( function() {  // success
-							alert("Settings Updated.");
-							refresh('index');
-						}, function() {
-						    alert("Settings Failed to Update");
-							valid = false;
-						});
-			}
-		}
-	});
-	
-	registerOnClick("#group-setup-form button", function() {
-	    valid = true;
-	    usrLevel = <?php echo $user->getColumn('UserType'); ?>;
-	
-		if(usrLevel == <?php echo TEACHER_ADMIN ?> || usrLevel == <?php echo TEACHER ?>) {
-			var group = $("#group-setup-form [name=group]").val().trim().replace(/\s/g,'');
-			valid = isUniqueGroupName(group);
-			if(valid) {
-			    $.when( $.ajax( {
-							url: "../php/ajax/settings/update-account.php",
-							type: "POST",
-							data: {
-							    License: '<?php echo $user->getColumn('license'); ?>',
-								Username: $("[name=username]").val(),
-								Groups: group
-							},
-						})).then( function() {
-							alert("Settings Updated.");
-							refresh('index');
-						}, function() {
-						    valid = false;
-						    alert("Settings Failed to Update");
-						});
-			}
-		}
-	});
-	
-	registerOnClick("#account-settings-form button", function() {
+		$('.product-ranges').each(function(key, value) {
+			var id = value.id.split('-')[2];
+			var accmin = $('[name=acc-min-' + id + ']').val();
+			var accmax = $('[name=acc-max-' + id + ']').val();
+			var ppsmin = $('[name=pps-min-' + id + ']').val();
+			var ppsmax = $('[name=pps-max-' + id + ']').val();
+			
+			var range = ((accmin) | (accmax << 8) | (ppsmin << 16) | (ppsmax << 24));
+			data[getProductName(id)] = range;
+		});
+		
 		sendAjax({
-			url: "php/ajax/settings/update-user.php",
-			data: {
-				Username: $("[name=username]").val(),
-				Fname: $("[name=firstname]").val(),
-				LName: $("[name=lastname]").val(),
-				Email: $("[name=email]").val(),
-				Phone: $("[name=phone]").val(),
-			},
+			url: "php/ajax/settings/update-account.php",
+			data: data,
 			success: function(result) {
-				console.log(result);
-				if (result['success']) {
-					alert("Settings Updated.");
-				} else {
-					alert(result['error']);
-				}
+				console.log('ay');
 			}
 		});
-	});	
+	});
 	
-	$(window).ready(function() {
-	    $(".required.text-input-wrapper").each( function() {
-			 if($(this).attr('data-value') != '') {
-			 	$("#" + $(this).attr('id') + "-input").attr('disabled','disabled');
-			}
-		});
+	registerOnChange('#modify-product-input', function(e) {
+		$('.product-ranges').hide();
+		
+		var productSelected = $(e).val();
+		$('#ranges-product-' + productSelected).show();
 	});
 	
 	</script>
@@ -141,15 +89,15 @@
 							Teacher Options
 						</div>
 						<div class="body">
-							<form id="account-settings-form" method="POST">
-								<div class="select-input" data-label="Default Page" data-name="default-page" data-value="<?php echo $defaultPage; ?>">
+							<form id="teacher-options-form" method="POST">
+								<div class="select-input" data-label="Default Page" data-name="default-page" data-value="<?php echo $defaults['page']; ?>">
 									<option value="index">Overview</option>
 									<option value="rosters">Manage Rosters</option>
 									<option value="students">Manage Students</option>
 									<option value="snapshot">Student Snapshot</option>
 								</div>
 								
-								<div class="select-input" data-label="Default Product" data-name="default-product" data-value="<?php echo $defaultProduct; ?>">
+								<div class="select-input" data-label="Default Product" data-name="default-product" data-value="<?php echo $defaults['product']; ?>">
 									<?php Element::productSelectInput($products); ?>
 								</div>
 								
@@ -157,11 +105,32 @@
 								
 								<div style="text-align: center; margin: 18px 0px 6px;">Adjust Performance Ranges</div>
 								
-								<div class="select-input" data-name="default-product" data-value="1">
+								<div class="select-input" id="modify-product" data-value="1">
 									<?php Element::productSelectInput($products); ?>
 								</div>
 								
 								<!-- Need to put these in -->
+								<?php
+									for ($i = 0; $i < count($ranges); ++$i) {
+										$productID = pow(2, $i);
+								?>
+								<div id="ranges-product-<?php echo $productID; ?>" <?php if ($i != 0) { echo 'style="display: none;"'; } ?> class="row product-ranges">
+									<div class="col-xs-6">
+										<div class="text-input required" data-label="Accuracy Min" data-name="acc-min-<?php echo $productID; ?>" data-value="<?php echo $ranges[$productID]['accmin']; ?>"></div>
+									</div>
+									<div class="col-xs-6">
+										<div class="text-input required" data-label="Accuracy Max" data-name="acc-max-<?php echo $productID; ?>" data-value="<?php echo $ranges[$productID]['accmax']; ?>"></div>
+									</div>
+									<div class="col-xs-6">
+										<div class="text-input required" data-label="Points Per Second Min" data-name="pps-min-<?php echo $productID; ?>" data-value="<?php echo $ranges[$productID]['ppsmin']; ?>"></div>
+									</div>
+									<div class="col-xs-6">
+										<div class="text-input required" data-label="Points Per Second Max" data-name="pps-max-<?php echo $productID; ?>" data-value="<?php echo $ranges[$productID]['ppsmax']; ?>"></div>
+									</div>
+								</div>
+								<?php
+									}
+								?>
 								
 								<button>Update</button>
 								<div class="clear"></div>

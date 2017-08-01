@@ -527,22 +527,21 @@ h1, h2, h3, h4, h5, h6, p {
 }
 
 .snapshot .name {
-	line-height: 36px;
-	height: 30px !important;
+	line-height: 34px;
+	height: 28px !important;
 	vertical-align: center;
 	margin-bottom: 0px;
 }
 
 .snapshot .scores-3-group {
-	height: 30px;
+	height: 28px;
 	text-align: center;
 }
 
 .snapshot .scores-3-group.no-data:before {
 	content: 'No data';
-	line-height: 36px;
-	height: 30px !important;
-	vertical-align: center;
+	line-height: 34px;
+	height: 28px !important;
 	font-size: 13px;
 }
 
@@ -552,20 +551,13 @@ h1, h2, h3, h4, h5, h6, p {
 
 .snapshot .score-title {
 	text-align: center;
-	line-height: 33px;
+	line-height: 27px;
 }
 
 .snapshot .score-circle, .snapshot .trend-icon {
-	font-size: 36px;
-	line-height: 30px;
+	font-size: 26px;
+	line-height: 32px;
 	color: #A0A0A0;
-	/*width: 30px;
-	height: 30px;
-	margin: 0px auto;
-	-webkit-border-radius: 50%;
-	-moz-border-radius: 50%;
-	border-radius: 50%;
-	border: 2px solid #A0A0A0;*/
 }
 
 .snapshot .trend-icon {
@@ -1480,24 +1472,24 @@ input[type="text"] ~ .show-char-button::before {
 
 /* ACCOUNT SETUP FORM */
 
-#parent-setup-form {
+#parent-setup-form, #teacher-options-form {
 	padding: 0px 30px 12px;
 }
 
-#parent-setup-form h3 {
+#parent-setup-form h3, #teacher-options-form h3 {
 	margin: 12px 0px 12px -5px;
 }
 
-#parent-setup-form label {
+#parent-setup-form label, #teacher-options-form label {
 	font-size: 14px;
 	padding-left: 1px;
 }
 
-#parent-setup-form .required {
+#parent-setup-form .required, #teacher-options-form .required {
 	border_color: red;
 }
 
-#parent-setup-form  .required[disabled=disabled] {
+#parent-setup-form  .required[disabled=disabled], #teacher-options-form  .required[disabled=disabled] {
 	border_color: black;
 }
 

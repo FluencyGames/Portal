@@ -309,27 +309,26 @@
 						<div class="head center">
 							Utilities
 						</div>
-						<div class="body">
-							<div class="row row-no-margin">
-								<div class="col-xs-12 col-sm-12 col-md-push-2 col-md-4 col-lg-push-0 col-lg-12">
-									<div class="big-button" data-href="print?type=students" data-icon="print">Print Usernames</div>
-								</div>
-								<div class="col-xs-12 col-sm-12 col-md-push-2 col-md-4 col-lg-push-0 col-lg-12">
-									<div class="big-button" data-icon="upload" data-file-id="student-csv-upload" data-file-type=".csv">Upload CSV</div>
-								</div>
-								<div class="col-xs-12 col-sm-12 col-md-push-2 col-md-4 col-lg-push-0 col-lg-12">
-									<div class="big-button" data-href="<?php echo $template; ?>" data-icon="download">Template</div>
-								</div>
-								<div class="clear"></div>
+						<div class="body" style="font-size: 20px;">
+							<div>
+								<a href="print?type=students">
+									<span class="icon-print"></span> Print Usernames
+								</a>
 							</div>
-							<div id="student-uploading" class="uploading">
+							<!--<div class="big-button" data-icon="upload" data-file-id="student-csv-upload" data-file-type=".csv">Upload CSV</div>-->
+							<div>
+								<a href="<?php echo $template; ?>">
+									<span class="icon-download"></span> Download Template
+								</a>
+							</div>
+							<!--<div id="student-uploading" class="uploading">
 								<div class="info-wrapper">
 									<div class="info">
 										<span class="icon-cw"></span>
 										<p>Uploading...</p>
 									</div>
 								</div>
-							</div>
+							</div>-->
 						</div>
 					</div>
 				</div>

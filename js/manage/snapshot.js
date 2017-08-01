@@ -11,6 +11,14 @@ function createScorePair(scoreDiv, trendDiv, type) {
 	};
 }
 
+function createRangeInfo(min, max, inverse) {
+	return {
+		min: min,
+		max: max,
+		inverse: inverse,
+	};
+}
+
 Snapshot = function(data) {
 	var $this = this;
 	this.data = data;
@@ -79,7 +87,7 @@ Snapshot = function(data) {
 }
 
 // TODO(bret): Find a better, cleaner way to write all this, jeesh
-Snapshot.prototype.updateScores = function(scores) {
+Snapshot.prototype.updateScores = function(scores, rangeInfo) {
 	var scoreDiv;
 	var classToUse;
 	for (var s = 0; s < numScoresPerCol * 2; ++s) {
@@ -111,9 +119,10 @@ Snapshot.prototype.updateTrends = function(trends) {
 		trendDiv = this.scoreInfo[s].trendDiv;
 		classToUse = defaultScoreTrendClass;
 		
-		if (trends[s] >= 0.7) {
+		// NOTE(bret): These are hardcoded, they shouldn't need to be saved in a database, since they are universal
+		if (trends[s] >= 1.0) {
 			classToUse += ' green icon-up-dir';
-		} else if (trends[s] < 0.5) {
+		} else if (trends[s] <= -1.0) {
 			classToUse += ' red icon-down-dir';
 		} else {
 			classToUse += ' icon-minus';
