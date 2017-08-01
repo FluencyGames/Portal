@@ -91,6 +91,18 @@
 		}
 		
 		public static function head($title) {
+			// This is where we're checking the expired license for now
+			$user = User::getCurrentUser();
+			$license = $user->getLicenseData();
+			if (time() > strtotime($license['EndDate'])) {
+				$curpage = $_SERVER['SCRIPT_NAME'];
+				$subpage = Config::get('documentroot') . 'manage/subscription';
+				if (!(($curpage == $subpage) || ($curpage == $subpage . '.php'))) {
+					header('location: ' . $subpage);
+					die();
+				}
+			}
+			
 			// TODO: Google Analytics
 			// TODO: Remove Open Sans not using
 			$documentroot = Config::get('documentroot');
