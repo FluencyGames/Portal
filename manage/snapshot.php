@@ -18,6 +18,10 @@
 	$students = $user->getStudents('ORDER BY Lname ASC, Fname ASC');
 	
 	$defaults = $user->getTeacherOptions();
+	
+	$ranges[1] = $user->getRanges('AddRanges');
+	$ranges[2] = $user->getRanges('MultRanges');
+	$ranges[4] = $user->getRanges('PercRanges');
 ?>
 <!DOCTYPE html>
 <html>
@@ -28,6 +32,9 @@
 	<script src="<?php echo $documentroot; ?>js/buffer.js"></script>
 	<script src="<?php echo $documentroot; ?>js/reports/process-report.js"></script>
 	<script src="<?php echo $documentroot; ?>js/reports/prepare-report.js"></script>
+	<script type="text/javascript">
+		ranges = <?php echo json_encode($ranges); ?>;
+	</script>
 	<script src="<?php echo $documentroot; ?>js/manage/snapshot.js"></script>
 </head>
 <body>

@@ -94,14 +94,24 @@ Snapshot.prototype.updateScores = function(scores, rangeInfo) {
 		scoreDiv = this.scoreInfo[s].scoreDiv;
 		classToUse = defaultScoreDivClass;
 		
-		var percent = (scores[s] * 100).toFixed(2);
+		var isPPS = (s % 2) == 0;
+		
 		var type = this.scoreInfo[s].type + ((s < numScoresPerCol) ? ' (Summary)' : ' (Last Game)');
-		scoreDiv.attr('title', type + '<br />' + percent + '%');
+		if (isPPS) {
+			var theScore = (scores[s]).toFixed(2);
+			scoreDiv.attr('title', type + '<br />' + theScore + ' PPS');
+		} else {
+			var percent = (scores[s] * 100).toFixed(2);
+			scoreDiv.attr('title', type + '<br />' + percent + '%');
+		}
+		
+		var min = (isPPS) ? rangeInfo.ppsmin : rangeInfo.accmin;
+		var max = (isPPS) ? rangeInfo.ppsmax : rangeInfo.accmax;
 		
 		// TODO(bret): Make these use actual numbers
-		if (scores[s] >= 0.7) {
+		if (scores[s] >= max) {
 			classToUse += ' green icon-circle';
-		} else if (scores[s] < 0.5) {
+		} else if (scores[s] < min) {
 			classToUse += ' red icon-circle';
 		} else {
 			classToUse += ' icon-circle-empty';
@@ -167,7 +177,7 @@ Snapshot.prototype.update = function(newData, product) {
 			theStudent.summary.DevLastAccuracy,
 		];
 		
-		this.updateScores(scores);
+		this.updateScores(scores, ranges[product]);
 		this.updateTrends(trends);
 	}
 }
