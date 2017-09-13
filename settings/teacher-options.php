@@ -43,6 +43,7 @@
 	
 	registerOnClick("#teacher-options-form button", function() {
 		data = {
+			settings: true,
 			DefaultPage: $('[name=default-page]').val(),
 			DefaultProduct: $('[name=default-product]').val(),
 		};

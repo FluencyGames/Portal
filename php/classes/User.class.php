@@ -10,12 +10,13 @@
 	
 	class User {
 		private $_data = array();
+		private $_settings = null;
 		private $_valid = false;
 		private static $_encrypt = true;
 		private $logon_attempts = 0;
 		
-		public function __construct($id, $license = null, $columns = '*') {
-			$query = "SELECT {$columns} FROM " . T_CONTACTS . " WHERE (Id = ? OR Email = ? OR Username = ? OR Username = ?)";
+		public function __construct($id, $license = null) {
+			$query = 'SELECT * FROM ' . T_CONTACTS . ' WHERE (Id = ? OR Email = ? OR Username = ? OR Username = ?)';
 			$data = array(intval($id), $id, $id, self::encode($id));
 			$resultNum = ((is_numeric($license)) ? intval($license) : 0);
 			
@@ -32,6 +33,8 @@
 			if ($result != null) {
 				$this->_data = $result;
 				$this->_valid = true;
+				
+				$this->initSettings();
 			}
 		}
 		
@@ -72,10 +75,10 @@
 		
 		/******/
 		
-		public static function getCurrentUser($columns = '*') {
+		public static function getCurrentUser() {
 			if ((isset($_COOKIE['fluency_games_user'])) && (isset($_COOKIE['fluency_games_license'])))
-				return new User($_COOKIE['fluency_games_user'], $_COOKIE['fluency_games_license'], $columns);
-			return new User(-1, null, $columns);
+				return new User($_COOKIE['fluency_games_user'], $_COOKIE['fluency_games_license']);
+			return new User(-1, null);
 		}
 		
 		public function decodeFields(&$arr, $fields) {
@@ -296,6 +299,10 @@
 		}
 		
 		public function updateAccount($data) {
+			if (isset($data['settings'])) {
+				return $this->updateSettings($data);
+			}
+			
 			$response = array('success' => false, 'error' => null);
 			
 			$query = '';
@@ -582,15 +589,65 @@
 			return $notifications;
 		}
 		
+		public function initSettings() {
+			if ($this->_data['Settings'] === null) {
+				$this->_data['Settings'] = array(
+					'DefaultPage' => 'index',
+					'DefaultProduct' => 1,
+					'AddRanges' => $this->encodeRanges(85, 92, 3, 5),
+					'MultRanges' => $this->encodeRanges(85, 92, 25, 100),
+					'PercRanges' => $this->encodeRanges(80, 90, 3, 5),
+				);
+				
+				$this->_settings = $this->_data['Settings'];
+				$this->updateSettings($this->_settings);
+			} else {
+				$json = base64_decode($this->_data['Settings']);
+				$this->_settings = json_decode($json, true);
+			}
+			
+			unset($this->_data['Settings']);
+		}
+		
+		public function updateSettings($data) {
+			$response = array('success' => false, 'error' => null);
+			
+			// If for whatever reason the User doesn't have settings... this shouldn't ever happen!
+			if ($this->_settings === null) {
+				$response['error'] = 'An error occurred. Please try again';
+				return $response;
+			}
+			
+			// Merge the arrays together (the second array will overwrite the first)
+			$newSettings = array_merge($this->_settings, $data);
+			
+			$json = json_encode($newSettings, JSON_NUMERIC_CHECK);
+			$encoded = base64_encode($json);
+			
+			$query = 'UPDATE ' . T_CONTACTS . ' SET Settings = ? WHERE (Id = ?)';
+			
+			$data = array('Settings' => base64_encode($json));
+			
+			$db = Database::getInstance();
+			$data['Id'] = $this->getColumn('Id');
+			$result = $db->query($query, $data)->result();
+			$response['success'] = !$db->error();
+			$response['error']  = $db->error();
+			
+			$this->_settings = $newSettings;
+			
+			return $response;
+		}
+		
 		public function getHomePage() {
-			return $this->getColumn('DefaultPage');
+			return $this->_settings['DefaultPage'];
 		}
 		
 		public function getTeacherOptions() {
 			// TODO(bret): Get this from the database!
 			return array(
 				'page' => $this->getHomePage(),
-				'product' => $this->getColumn('DefaultProduct'),
+				'product' => $this->_settings['DefaultProduct'],
 			);
 		}
 		
@@ -624,7 +681,7 @@
 		}
 		
 		public function getRanges($type) {
-			return self::convertRanges($this->getColumn($type));
+			return self::convertRanges($this->_settings[$type]);
 		}
 		
 	}
