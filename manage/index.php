@@ -2,7 +2,7 @@
 	require_once(__DIR__ . "/../php/classes/Element.class.php");
 	require_once(__DIR__ . "/../php/classes/User.class.php");
 	
-	Element::restrictAccess(EDUCATIONAL_ADMIN | TEACHER_ADMIN);
+	Element::restrictAccess(EDUCATIONAL_ADMIN | TEACHER_ADMIN | PARENT_GUARDIAN, 'manage/rosters');
 	
 	$user = User::getCurrentUser();
 	$license = $user->getLicenseData();

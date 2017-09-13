@@ -2,7 +2,8 @@
 	require_once(__DIR__ . "/php/classes/Element.class.php");
 	require_once(__DIR__ . "/php/classes/User.class.php");
 	
-	Element::redirectUsersToHome();
+	if (User::loggedIn())
+		Element::redirectUsersToHome();
 ?>
 <!DOCTYPE html>
 <html>

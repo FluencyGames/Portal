@@ -10,7 +10,7 @@
 			//
 			$user = User::getCurrentUser();
 			$userType = $user->getColumn('UserType');
-			$loc = 'home';
+			$loc = '';
 				
 			if (User::loggedIn()) {
 				switch($userType) {
@@ -33,9 +33,12 @@
 						$loc = "manage/{$page}";
 						break;
 				}
-				header('location: ' . Config::get('documentroot') . $loc);
-				die();
+			} else {
+				User::logout();
 			}
+			
+			header('location: ' . Config::get('documentroot') . $loc);
+			die();
 		}			
 
 		public static function redirectUsersToSetup() {
@@ -61,15 +64,17 @@
 						die();
 					}
 				}
-
-				
 			}
 			
 			if ( ($allowedLevel == UNRESTRICTED || $allowedLevel == FLUENCY_GAMES_ADMIN) && $userType==FLUENCY_GAMES_ADMIN) {
 			    return;
 			}
 			
-			if (!User::loggedIn() || ($userType & $allowedLevel) == 0) {
+			if (($userType & $allowedLevel) == 0) {
+				header('location: ' . Config::get('documentroot') . $location);
+			}
+			
+			if (!User::loggedIn()) {
 				Element::redirectUsersToHome();
 				die();
 			}
@@ -90,16 +95,21 @@
 			return $pageURL;
 		}
 		
-		public static function head($title) {
+		public static function head($title, $checkForExpired = true) {
 			// This is where we're checking the expired license for now
-			$user = User::getCurrentUser();
-			$license = $user->getLicenseData();
-			if (time() > strtotime($license['EndDate'])) {
-				$curpage = $_SERVER['SCRIPT_NAME'];
-				$subpage = Config::get('documentroot') . 'manage/subscription';
-				if (!(($curpage == $subpage) || ($curpage == $subpage . '.php'))) {
-					header('location: ' . $subpage);
-					die();
+			if ($checkForExpired && User::loggedIn()) {
+				$user = User::getCurrentUser();
+				$userType = $user->getColumn('UserType');
+				$license = $user->getLicenseData();
+				if (time() > strtotime($license['EndDate'])) {
+					/*$canUpgrade = (($userType & (EDUCATIONAL_ADMIN | TEACHER_ADMIN | PARENT_GUARDIAN)) > 0);
+					if ($canUpgrade) {
+						header('location: ' . Config::get('documentroot') . 'manage/subscription');
+						die();
+					} else {*/
+						header('location: ' . Config::get('documentroot') . 'manage/alert');
+						die();
+					//}
 				}
 			}
 			
