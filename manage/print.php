@@ -73,6 +73,11 @@
 		@media print {
 			.page-break	{ display: block; page-break-before: always; }
 			
+			.page-break:last-child {
+				page-break-before: auto;
+				page-break-after: auto;
+			}
+			
 			.names {
 				padding: 15px;
 			}
