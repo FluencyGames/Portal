@@ -91,13 +91,15 @@ Snapshot.prototype.updateScores = function(scores, product) {
 		var isPPS = (s % 2) == 0;
 		
 		var type = this.scoreInfo[s].type + ((s < numScoresPerCol) ? ' (Summary)' : ' (Last Game)');
-		if (isPPS) {
-			var theScore = (scores[s]).toFixed(2);
-			scoreDiv.attr('title', type + '<br />' + theScore + ' PPS');
-		} else {
-			var percent = (scores[s] * 100).toFixed(2);
-			scoreDiv.attr('title', type + '<br />' + percent + '%');
+		
+		var postfix = ' PPS';
+		if (!isPPS) {
+			scores[s] *= 100;
+			postfix = '%';
 		}
+		
+		var theScore = (scores[s]).toFixed(2);
+		scoreDiv.attr('title', type + '<br />' + theScore + postfix);
 		
 		var min = (isPPS) ? rangeInfo.ppsmin : rangeInfo.accmin;
 		var max = (isPPS) ? rangeInfo.ppsmax : rangeInfo.accmax;
