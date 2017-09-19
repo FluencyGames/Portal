@@ -170,10 +170,14 @@ Snapshot.prototype.update = function(newData, product) {
 		
 		var trends = [
 			theStudent.summary.DevPtsPerSec,
-			theStudent.summary.DevAccuracy,
+			theStudent.summary.DevScore,
 			theStudent.summary.DevLastPtsPerSec,
-			theStudent.summary.DevLastAccuracy,
+			theStudent.summary.DevLastScore,
 		];
+		
+		console.log('student: ', theStudent);
+		//console.log("Scores: ", scores);
+		//console.log("Trends: ", trends);
 		
 		this.updateScores(scores, product);
 		this.updateTrends(trends);
@@ -194,7 +198,9 @@ function loadSnapshots(product) {
 		success: function(result) {
 			students = result.students;
 			for (var key in students) {
-				snapshots[parseInt(key)].update(students[key], product);
+				var snap = snapshots[parseInt(key)];
+				if (snap !== undefined)
+					snap.update(students[key], product);
 			}
 		},
 		error: function(result) {

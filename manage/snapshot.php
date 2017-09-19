@@ -15,7 +15,12 @@
 	$teacherID = $user->getColumn('Id');
 	$groupName = $user->getColumn('Groups');
 	
-	$students = $user->getStudents('ORDER BY Lname ASC, Fname ASC');
+	$students = $user->getStudents('ORDER BY Lname ASC, Fname ASC', '*', $groupName);
+	foreach ($students as &$student) {
+		$student['Lname'] = User::decode($student['Lname']);
+		$student['Fname'] = User::decode($student['Fname']);
+	}
+	$user->sortStudents($students);
 	
 	$defaults = $user->getTeacherOptions();
 	
