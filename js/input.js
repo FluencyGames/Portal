@@ -110,7 +110,8 @@ CheckboxInput = function(json) {
 	{	// Label
 		var elem = this.label = document.createElement("label");
 		elem.setAttribute("for", json.id + "-input");
-		$(elem).text(json.label);
+		if (json.label)
+			$(elem).text(json.label);
 		this.wrapper.appendChild(elem);
 	}
 }
