@@ -41,11 +41,29 @@
 		return name;
 	}
 	
-	registerOnClick("#teacher-options-form button", function() {
+	function sendSettings(data) {
+		sendAjax({
+			url: "php/ajax/settings/update-account.php",
+			data: data,
+			success: function(result) {
+				console.log('ay');
+			}
+		});
+	}
+	
+	registerOnClick('#teacher-defaults-form button', function() {
 		data = {
 			settings: true,
 			DefaultPage: $('[name=default-page]').val(),
 			DefaultProduct: $('[name=default-product]').val(),
+		};
+		
+		sendSettings(data);
+	});
+	
+	registerOnClick('#teacher-ranges-form button', function() {
+		data = {
+			settings: true,
 		};
 		
 		$('.product-ranges').each(function(key, value) {
@@ -59,13 +77,7 @@
 			data[getProductName(id)] = range;
 		});
 		
-		sendAjax({
-			url: "php/ajax/settings/update-account.php",
-			data: data,
-			success: function(result) {
-				console.log('ay');
-			}
-		});
+		sendSettings(data);
 	});
 	
 	registerOnChange('#modify-product-input', function(e) {
@@ -87,10 +99,10 @@
 				<div class="col-xs-12 col-sm-8 col-lg-6">
 					<div class="card">
 						<div class="head center">
-							Teacher Options
+							Defaults
 						</div>
 						<div class="body">
-							<form id="teacher-options-form" method="POST">
+							<form id="teacher-defaults-form" class="teacher-options-form" method="POST">
 								<div class="select-input" data-label="Default Page" data-name="default-page" data-value="<?php echo $defaults['page']; ?>">
 									<option value="index">Overview</option>
 									<option value="rosters">Manage Rosters</option>
@@ -102,10 +114,17 @@
 									<?php Element::productSelectInput($products); ?>
 								</div>
 								
-								<hr />
-								
-								<div style="text-align: center; margin: 18px 0px 6px;">Adjust Performance Ranges</div>
-								
+								<button>Update</button>
+								<div class="clear"></div>
+							</form>
+						</div>
+					</div>
+					<div class="card">
+						<div class="head center">
+							Performance Ranges
+						</div>
+						<div class="body">
+							<form id="teacher-ranges-form" class="teacher-options-form" method="POST">
 								<div class="select-input" id="modify-product" data-value="1">
 									<?php Element::productSelectInput($products); ?>
 								</div>

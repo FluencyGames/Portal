@@ -1472,24 +1472,24 @@ input[type="text"] ~ .show-char-button::before {
 
 /* ACCOUNT SETUP FORM */
 
-#parent-setup-form, #teacher-options-form {
+#parent-setup-form, .teacher-options-form {
 	padding: 0px 30px 12px;
 }
 
-#parent-setup-form h3, #teacher-options-form h3 {
+#parent-setup-form h3, .teacher-options-form h3 {
 	margin: 12px 0px 12px -5px;
 }
 
-#parent-setup-form label, #teacher-options-form label {
+#parent-setup-form label, .teacher-options-form label {
 	font-size: 14px;
 	padding-left: 1px;
 }
 
-#parent-setup-form .required, #teacher-options-form .required {
+#parent-setup-form .required, .teacher-options-form .required {
 	border_color: red;
 }
 
-#parent-setup-form  .required[disabled=disabled], #teacher-options-form  .required[disabled=disabled] {
+#parent-setup-form  .required[disabled=disabled], .teacher-options-form  .required[disabled=disabled] {
 	border_color: black;
 }
 
