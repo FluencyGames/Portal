@@ -38,13 +38,13 @@
 								</div>
 								<div class="row">
 									<div class="col-xs-12 col-md-6">
-										<div class="big-button" data-href="#" data-icon="download">Manage Roster</div>
+										<div class="big-button" data-href="rosters" data-icon="download">Manage Rosters</div>
 									</div>
 									<div class="col-xs-12 col-md-6">
-										<div class="big-button" data-href="#" data-icon="download">Manage Students</div>
+										<div class="big-button" data-href="students" data-icon="download">Manage Students</div>
 									</div>
 									<div class="col-xs-12 col-md-push-3 col-md-6">
-										<div class="big-button" data-href="#" data-icon="camera">Snapshot</div>
+										<div class="big-button" data-href="snapshot" data-icon="camera">Snapshot</div>
 									</div>
 								</div>
 							</div>
