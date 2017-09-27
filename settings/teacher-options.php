@@ -46,8 +46,16 @@
 			url: "php/ajax/settings/update-account.php",
 			data: data,
 			success: function(result) {
-				console.log('ay');
-			}
+				if (result['success']) {
+					var m = new LoadingModal();
+					m.open({title: "Saving...", refresh: 1000 });
+				} else {
+					alert(result['error']);
+				}
+			},
+			error: function(result) {
+				alert(result['error']);
+			},
 		});
 	}
 	
