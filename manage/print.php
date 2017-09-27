@@ -6,6 +6,7 @@
 	$user = User::getCurrentUser();
 	
 	$teacherOrStudent = $_GET['type'];
+	$link = ($teacherOrStudent == 'students') ? 'rosters' : 'teachers';
 	
 	$LNameStr = '';
 	$numItems = 0;
@@ -66,16 +67,50 @@
 			word-wrap: break-word;
 		}
 		
+		button {
+			margin: 20px auto;
+			display: block;
+			padding: 9px 32px;
+			font-size: 13px;
+			font-weight: 600;
+			font-family: 'Open Sans', sans-serif;
+			background-color: #7E3E97;
+			border: 0px;
+			outline: 0px;
+			color: #F8F8F8;
+			cursor: pointer;
+			-webkit-border-radius: 3px;
+			-moz-border-radius: 3px;
+			border-radius: 3px;
+			text-transform: uppercase;
+			-webkit-transition: background-color 0.2s;
+			transition: background-color 0.2s;
+			border-bottom: 3px solid #3E0961;
+		}
+
+		form button {
+			margin-bottom: 12px;
+		}
+
+		button:hover {
+			background-color: #C753F4;
+			border-bottom: 3px solid #8E4EA7;
+		}
+		
 		@media all {
 			.page-break	{ display: none; }
 		}
 
 		@media print {
+			#return-button {
+				display: none;
+			}
+			
 			.page-break	{ display: block; page-break-before: always; }
 			
 			.page-break:last-child {
 				page-break-before: auto;
-				page-break-after: auto;
+				page-break-after: auto;	
 			}
 			
 			.names {
@@ -92,6 +127,9 @@
 	</script>
 </head>
 <body>
+	<a id="return-button" href="<?php echo $link; ?>">
+		<button>RETURN TO <?php echo strtoupper($link); ?></button>
+	</a>
 	<?php
 		$i = 0;
 		foreach ($items as $item) {
