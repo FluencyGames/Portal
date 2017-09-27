@@ -63,7 +63,7 @@
 			margin: 0px auto;
 			width: 670px;
 			background-color: white;
-			min-height: 100%;
+			overflow: visible;
 			word-wrap: break-word;
 		}
 		
@@ -118,7 +118,7 @@
 			}
 			
 			.names .row {
-				height: 130px;
+				height: 126px;
 			}
 		}
 	</style>
