@@ -42,7 +42,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<?php Element::head("Fluency Games User Portal"); ?>
+	<?php Element::head("Fluency Games User Portal", false); ?>
 	<script src="<?php echo Config::get('documentroot'); ?>js/manage/subscription.js"></script>
 	<script src="<?php echo $shoproot; ?>js/shop.js"></script>
 

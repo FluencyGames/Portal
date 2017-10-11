@@ -195,7 +195,8 @@ function adbg_process_game_data(theStudent, stream) {
 		summary.DevPtsPerSec 	= recentSpeed.spread(summary.PtsPerSec, madSpeed);
         summary.DevAccuracy     = recentAccuracy.spread(summary.Accuracy, madAccu);
 		
-		summary.DevLastScore 	= summary.LastGameScore.spread(summary.Avg, madScore);
+		// NOTE(bret): summary.LastGameScore was being parsed as a string for some reason, so I added the parseInt to make sure spread() could be called on it
+		summary.DevLastScore 	= parseInt(summary.LastGameScore).spread(summary.Avg, madScore);
 		summary.DevLastPtsPerSec = summary.LastGamePtsPerSec.spread(summary.PtsPerSec, madSpeed);
         summary.DevLastAccuracy = summary.LastGameAccuracy.spread(summary.Accuracy, madAccu);
 	}

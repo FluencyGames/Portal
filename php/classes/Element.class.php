@@ -8,8 +8,9 @@
 			// 12-21-15 mse updated to redirect logged in user to 
 			// specific home page
 			//
-			$userType = User::getCurrentUser()->getColumn('UserType');
-			$loc = 'home';
+			$user = User::getCurrentUser();
+			$userType = $user->getColumn('UserType');
+			$loc = '';
 				
 			if (User::loggedIn()) {
 				switch($userType) {
@@ -28,12 +29,16 @@
 					case TEACHER: 
 					case TEACHER_ADMIN: 
 					case PARENT_GUARDIAN: 
-						$loc = 'manage/students';
+						$page = $user->getHomePage();
+						$loc = "manage/{$page}";
 						break;
 				}
-				header('location: ' . Config::get('documentroot') . $loc);
-				die();			
+			} else {
+				User::logout();
 			}
+			
+			header('location: ' . Config::get('documentroot') . $loc);
+			die();
 		}			
 
 		public static function redirectUsersToSetup() {
@@ -59,15 +64,17 @@
 						die();
 					}
 				}
-
-				
 			}
 			
 			if ( ($allowedLevel == UNRESTRICTED || $allowedLevel == FLUENCY_GAMES_ADMIN) && $userType==FLUENCY_GAMES_ADMIN) {
 			    return;
 			}
 			
-			if (!User::loggedIn() || ($userType & $allowedLevel) == 0) {
+			if (($userType & $allowedLevel) == 0) {
+				header('location: ' . Config::get('documentroot') . $location);
+			}
+			
+			if (!User::loggedIn()) {
 				Element::redirectUsersToHome();
 				die();
 			}
@@ -88,10 +95,28 @@
 			return $pageURL;
 		}
 		
-		public static function head($title) {
+		public static function head($title, $checkForExpired = true) {
+			// This is where we're checking the expired license for now
+			if ($checkForExpired && User::loggedIn()) {
+				$user = User::getCurrentUser();
+				$userType = $user->getColumn('UserType');
+				$license = $user->getLicenseData();
+				if (time() > strtotime($license['EndDate'])) {
+					/*$canUpgrade = (($userType & (EDUCATIONAL_ADMIN | TEACHER_ADMIN | PARENT_GUARDIAN)) > 0);
+					if ($canUpgrade) {
+						header('location: ' . Config::get('documentroot') . 'manage/subscription');
+						die();
+					} else {*/
+						header('location: ' . Config::get('documentroot') . 'manage/alert');
+						die();
+					//}
+				}
+			}
+			
 			// TODO: Google Analytics
 			// TODO: Remove Open Sans not using
 			$documentroot = Config::get('documentroot');
+			$jquery = Config::get('live') ? 'https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js' : ($documentroot . 'js/jquery.min.js');
 			?>
 	<title><?php echo $title; ?></title>
 	<meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
@@ -103,7 +128,7 @@
 	<link rel="stylesheet" type="text/css" href="<?php echo $documentroot; ?>css/fontello.css">
 	<link rel="stylesheet" type="text/css" href="<?php echo $documentroot; ?>css/animation.css"><!--[if IE 7]><link rel="stylesheet" href="<?php echo $documentroot; ?>css/fontello-ie7.css"><![endif]-->
 
-	<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
+	<script src="<?php echo $jquery; ?>"></script>
 	<script src="<?php echo $documentroot; ?>js/main.js"></script>
 	<script src="<?php echo $documentroot; ?>js/modal.js"></script>
 	<script src="<?php echo $documentroot; ?>js/input.js"></script>
@@ -114,10 +139,13 @@
 	<script>
 	Sequence.setBreakpoints(768, 992, 1200);
 	$(document).ready(function(){
+		//$('[data-toggle="tooltip"][data-html="true"]').tipsy({html: true, gravity: 's'});
+		
 		$('[data-toggle="tooltip"][data-gravity="w"]').tipsy({/*fade: true, */gravity: 'w'});
 		$('[data-toggle="tooltip"][data-gravity="n"]').tipsy({/*fade: true, */gravity: 'n'});
 		$('[data-toggle="tooltip"][data-gravity="e"]').tipsy({/*fade: true, */gravity: 'e'});
 		$('[data-toggle="tooltip"]').tipsy({/*fade: true, */gravity: 's'});
+		
 	});
 	</script>
 			<?php
@@ -149,7 +177,7 @@
 			<?php
 				$user = User::getCurrentUser();
 				if ($user->isValid())
-					echo 'Logged in as ' . $user->getDisplayUsername();
+					echo 'Logged in as ' . $user->getDisplayUsername() . ' | <a href="' . $documentroot . 'login-as">Home</a>';
 				else
 					echo 'Not Logged in.'
 			?>
@@ -241,7 +269,7 @@
 							</li>
 						</a>
 						<a href="<?php echo $documentroot; ?>logout">
-							<li<?php echo ($n == 5) ? ' class="selected"' : ''; ?>>
+							<li<?php /* This is definitely not correct echo ($n == 5) ? ' class="selected"' : '';*/ ?>>
 								<span class="icon-logout"></span>Log out
 							</li>
 						</a>
@@ -296,6 +324,7 @@
 								self::sidebarItem('teachers', 'Manage Teachers', $n, ++$i, EDUCATIONAL_ADMIN);
 								self::sidebarItem('rosters', 'Manage Rosters', $n, ++$i, TEACHER | TEACHER_ADMIN | EDUCATIONAL_ADMIN);
 								self::sidebarItem('students', 'Manage Students', $n, ++$i, TEACHER | TEACHER_ADMIN | PARENT_GUARDIAN);
+								self::sidebarItem('snapshot', 'Student Snapshot', $n, ++$i, EDUCATIONAL_ADMIN | TEACHER | TEACHER_ADMIN | PARENT_GUARDIAN);
 							?>
 						</ul>
 					</div>
@@ -313,8 +342,9 @@
 						<ul>
 							<?php
 								$i = 0;
-								self::sidebarItem('../settings/index.php', 'General', $n, ++$i, UNRESTRICTED);
+								self::sidebarItem('../settings/index', 'General', $n, ++$i, UNRESTRICTED);
 								self::sidebarItem('password', 'Password', $n, ++$i, UNRESTRICTED);
+								self::sidebarItem('teacher-options', 'Teacher Options', $n, ++$i, TEACHER | TEACHER_ADMIN);
 							?>
 						</ul>
 					</div>
@@ -465,6 +495,15 @@
 			</div>
 
 			<?php
+		}
+		
+		public static function productSelectInput($products) {
+			if($products & 0x01) { ?> <option value="1" >Addition Blocks</option> <?php }
+			if($products & 0x02) { ?> <option value="2" >Multiplication Blocks</option> <?php }
+			if($products & 0x04) { ?> <option value="4" >Percent Bingo</option> <?php }
+			if($products & 0x08) { ?> <option value="8" >Subtraction Blocks</option> <?php }
+			if($products & 0x10) { ?> <option value="16">Integer Blocks</option> <?php }
+			?> <option value="128">Facts Assessment</option> <?php
 		}
 		
 	}

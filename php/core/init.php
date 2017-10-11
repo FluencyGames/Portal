@@ -58,15 +58,17 @@
 		//'shopfile' => 'shop-local.json',
 		
 		// for on-line install
-		'domain' => 'https://www.fluency-games.com/',
+		//'domain' => 'https://www.fluency-games.com/',
+		'domain' => 'https://localhost',
 		//'documentroot' => '/playground/dev/portal/',
-		'documentroot' => '/portal/',
+		//'documentroot' => '/portal/',
+		'documentroot' => '/dev/portal/',
 		'shopfile' => 'shop-live.json',
 		
 		'mediaroot' => '/media/',
 		'shoproot' => '/xcart/',
 
-		'live' => true,
+		'live' => false,
 		'maintenance' => false,
 		'version' => '1.1.073117 beta',
 		

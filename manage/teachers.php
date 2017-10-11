@@ -33,24 +33,15 @@
 			userData.sort( function(a, b) {
 				var A = a['LName'];
 				var B = b['LName'];
-				if( A < B )
-					res = -1;
-				else if( A > B )
-					res =  1;
-				else {
+				res = (A > B) - (A < B);
+				if (res == 0) {
 					A = a['Fname'];
 					B = b['Fname'];
-					if( A < B )
-						res = -1;
-					else if( A > B )
-						res = 1;
-					else
-						res = 0;
+					res = (A > B) - (A < B);
 				}
 				return res;
 			});
 		}
-
 				
 		function processUsers(userData) {
 			var curUser;
@@ -312,26 +303,28 @@
 				<div class="col-xs-12 col-sm-8 col-md-12 col-lg-3">
 					<div class="card">
 						<div class="head center">
-							Upload Teachers
+							Utilities
 						</div>
-						<div class="body">
-							<div class="row row-no-margin">
-								<div class="col-xs-12 col-sm-12 col-md-push-2 col-md-4 col-lg-push-0 col-lg-12">
-									<div class="big-button" data-href="<?php echo $template; ?>" data-icon="download">Template</div>
-								</div>
-								<div class="col-xs-12 col-sm-12 col-md-push-2 col-md-4 col-lg-push-0 col-lg-12">
-									<div class="big-button" data-icon="upload" data-file-id="teacher-csv-upload" data-file-type=".csv">Upload CSV</div>
-								</div>
-								<div class="clear"></div>
+						<div class="body" style="font-size: 20px;">
+							<div>
+								<a href="print?type=teachers">
+									<span class="icon-print"></span> Print Usernames
+								</a>
 							</div>
-							<div id="teacher-uploading" class="uploading">
+							<!--<div class="big-button" data-icon="upload" data-file-id="student-csv-upload" data-file-type=".csv">Upload CSV</div>-->
+							<div>
+								<a href="<?php echo $template; ?>">
+									<span class="icon-download"></span> Download Template
+								</a>
+							</div>
+							<!--<div id="student-uploading" class="uploading">
 								<div class="info-wrapper">
 									<div class="info">
 										<span class="icon-cw"></span>
 										<p>Uploading...</p>
 									</div>
 								</div>
-							</div>
+							</div>-->
 						</div>
 					</div>
 				</div>

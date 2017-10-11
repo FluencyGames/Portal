@@ -449,24 +449,24 @@ h1, h2, h3, h4, h5, h6, p {
 	text-align: center;
 }
 
-/* STUDENTS PAGE */
+/* STUDENTS/SNAPSHOT PAGE */
 
-.student-settings {
+.student-settings, .snapshot {
 	width: 100%;
 	padding: 10px 15px;
 	border-bottom: 1px solid #CDCDCD;
 	font-weight: 600;
 }
 
-.student-settings:last-of-type {
+.student-settings:last-of-type/*, .snapshot:last-of-type*/ {
 	margin-bottom: 100px;
 }
 
-.student-settings.bulk {
+.student-settings.bulk, .snapshot.product {
 	background-color: #E6E8E9;
 }
 
-.student-settings .name {
+.student-settings .name, .snapshot .name {
 	display: inline-block;
 	width: 125px;
 	font-size: 13px;
@@ -478,12 +478,12 @@ h1, h2, h3, h4, h5, h6, p {
 }
 
 @media (min-width: 992px) {
-	.student-settings .name {
+	.student-settings .name, .snapshot .name {
 		width: 170px;
 	}
 }
 
-.student-settings select {
+.student-settings select, .snapshot select {
 	width: 150px;
 	padding: 3px 5px;
 	margin: 0px 0px 0px 7px;
@@ -491,9 +491,12 @@ h1, h2, h3, h4, h5, h6, p {
 	/*vertical-align: center;*/
 }
 
-.student-settings .links {
+.student-settings .links, .snapshot .right-aligned-products {
 	display: inline-block;
 	float: right;
+}
+
+.student-settings .links {
 	padding: 2px 0px;
 }
 
@@ -521,6 +524,59 @@ h1, h2, h3, h4, h5, h6, p {
 	font: inherit;
 	vertical-align: baseline;
 	border-bottom: 1px solid #CDCDCD;
+}
+
+.snapshot .name {
+	line-height: 34px;
+	height: 28px !important;
+	vertical-align: center;
+	margin-bottom: 0px;
+}
+
+.snapshot .scores-3-group {
+	height: 28px;
+	text-align: center;
+}
+
+.snapshot .scores-3-group.no-data:before {
+	content: 'No data';
+	line-height: 34px;
+	height: 28px !important;
+	font-size: 13px;
+}
+
+.snapshot .scores-3-group.no-data div {
+	display: none;
+}
+
+.snapshot .score-title {
+	text-align: center;
+	line-height: 27px;
+}
+
+.snapshot .score-circle, .snapshot .trend-icon {
+	font-size: 26px;
+	line-height: 32px;
+	color: #A0A0A0;
+}
+
+.snapshot .trend-icon {
+	width: 50px;
+	margin-left: -10px;
+}
+
+.snapshot .trend-icon.empty {
+	display: inline-block;
+	width: 50px;
+	height: 10px;
+}
+
+.snapshot .green {
+	color: #1FAC28;
+}
+
+.snapshot .red {
+	color: #B35656;
 }
 
 .end-student-settings {
@@ -1184,6 +1240,10 @@ input[type="checkbox"]:disabled + label::before {
 	color: #7f7f7f;
 }
 
+.checkbox-input-wrapper {
+	display: inline-block;
+}
+
 .checkbox-input-wrapper + .name {
 	display: inline-block;
 	width: 125px;
@@ -1412,24 +1472,24 @@ input[type="text"] ~ .show-char-button::before {
 
 /* ACCOUNT SETUP FORM */
 
-#parent-setup-form {
+#parent-setup-form, .teacher-options-form {
 	padding: 0px 30px 12px;
 }
 
-#parent-setup-form h3 {
+#parent-setup-form h3, .teacher-options-form h3 {
 	margin: 12px 0px 12px -5px;
 }
 
-#parent-setup-form label {
+#parent-setup-form label, .teacher-options-form label {
 	font-size: 14px;
 	padding-left: 1px;
 }
 
-#parent-setup-form .required {
+#parent-setup-form .required, .teacher-options-form .required {
 	border_color: red;
 }
 
-#parent-setup-form  .required[disabled=disabled] {
+#parent-setup-form  .required[disabled=disabled], .teacher-options-form  .required[disabled=disabled] {
 	border_color: black;
 }
 

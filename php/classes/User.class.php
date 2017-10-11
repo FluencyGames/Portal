@@ -10,12 +10,13 @@
 	
 	class User {
 		private $_data = array();
+		private $_settings = null;
 		private $_valid = false;
 		private static $_encrypt = true;
 		private $logon_attempts = 0;
 		
-		public function __construct($id, $license = null, $columns = '*') {
-			$query = "SELECT {$columns} FROM " . T_CONTACTS . " WHERE (Id = ? OR Email = ? OR Username = ? OR Username = ?)";
+		public function __construct($id, $license = null) {
+			$query = 'SELECT * FROM ' . T_CONTACTS . ' WHERE (Id = ? OR Email = ? OR Username = ? OR Username = ?)';
 			$data = array(intval($id), $id, $id, self::encode($id));
 			$resultNum = ((is_numeric($license)) ? intval($license) : 0);
 			
@@ -32,6 +33,8 @@
 			if ($result != null) {
 				$this->_data = $result;
 				$this->_valid = true;
+				
+				$this->initSettings();
 			}
 		}
 		
@@ -72,10 +75,10 @@
 		
 		/******/
 		
-		public static function getCurrentUser($columns = '*') {
+		public static function getCurrentUser() {
 			if ((isset($_COOKIE['fluency_games_user'])) && (isset($_COOKIE['fluency_games_license'])))
-				return new User($_COOKIE['fluency_games_user'], $_COOKIE['fluency_games_license'], $columns);
-			return new User(-1, null, $columns);
+				return new User($_COOKIE['fluency_games_user'], $_COOKIE['fluency_games_license']);
+			return new User(-1, null);
 		}
 		
 		public function decodeFields(&$arr, $fields) {
@@ -296,6 +299,10 @@
 		}
 		
 		public function updateAccount($data) {
+			if (isset($data['settings'])) {
+				return $this->updateSettings($data);
+			}
+			
 			$response = array('success' => false, 'error' => null);
 			
 			$query = '';
@@ -322,8 +329,7 @@
 			return $response;
 		}
 		
-		public function validateNewPassword($pword)
-		{
+		public function validateNewPassword($pword) {
 		    $cnt = 0;
 			
 		    if(!empty($pword)) {
@@ -553,6 +559,8 @@
 		}
 		
 		public function getNotifications() {
+			return null;
+			
 			$n = rand(0, 3);
 		
 			$notifications = null;
@@ -561,45 +569,86 @@
 			switch ($n) {
 				case 0: break;
 				case 1:
-					$notifications = array('icon-bell-alt' => 'Assignment 1 Due 3/17',
-						'icon-attention' => 'Late assignment');
+					$notifications = array(
+						'icon-bell-alt' => 'Assignment 1 Due 3/17',
+						'icon-attention' => 'Late assignment'
+					);
 					break;
 				case 2:
-					$notifications = array('icon-eye' => 'Thing requires attention');
+					$notifications = array(
+						'icon-eye' => 'Thing requires attention'
+					);
 					break;
 				case 3:
-					$notifications = array('icon-thumbs-up-alt' => 'You passed');
+					$notifications = array(
+						'icon-thumbs-up-alt' => 'You passed'
+					);
 					break;
 			}
 			
 			return $notifications;
 		}
 		
-		public static function getHomePage() {
-			$userType = User::getCurrentUser()->getColumn('UserType');
-			$loc = 'home';
+		public function initSettings() {
+			if ($this->_data['Settings'] === null) {
+				$this->_data['Settings'] = array(
+					'DefaultPage' => 'index',
+					'DefaultProduct' => 1,
+					'AddRanges' => $this->encodeRanges(85, 92, 3, 5),
+					'MultRanges' => $this->encodeRanges(85, 92, 25, 100),
+					'PercRanges' => $this->encodeRanges(80, 90, 3, 5),
+				);
 				
-			if (User::loggedIn()) {
-				switch($type) {
-					case FLUENCY_GAMES_ADMIN:
-					default: 
-						$loc = "fg";
-						break;
-						
-					case EDUCATIONAL_ADMIN: 
-						$loc = "manage/teachers";
-						break; 
-						
-					case TEACHER: 
-					case TEACHER_ADMIN: 
-					case PARENT_GUARDIAN: 
-						$loc = "manage/students";
-						break;
-				}
+				$this->_settings = $this->_data['Settings'];
+				$this->updateSettings($this->_settings);
+			} else {
+				$json = base64_decode($this->_data['Settings']);
+				$this->_settings = json_decode($json, true);
 			}
 			
-			return Config::get('documentroot') . $loc;
+			unset($this->_data['Settings']);
+		}
 		
+		public function updateSettings($data) {
+			$response = array('success' => false, 'error' => null);
+			
+			// If for whatever reason the User doesn't have settings... this shouldn't ever happen!
+			if ($this->_settings === null) {
+				$response['error'] = 'An error occurred. Please try again';
+				return $response;
+			}
+			
+			// Merge the arrays together (the second array will overwrite the first)
+			$newSettings = array_merge($this->_settings, $data);
+			
+			$json = json_encode($newSettings, JSON_NUMERIC_CHECK);
+			$encoded = base64_encode($json);
+			
+			$query = 'UPDATE ' . T_CONTACTS . ' SET Settings = ? WHERE (Id = ?)';
+			
+			$data = array('Settings' => base64_encode($json));
+			
+			$db = Database::getInstance();
+			$data['Id'] = $this->getColumn('Id');
+			$result = $db->query($query, $data)->result();
+			$response['success'] = !$db->error();
+			$response['error']  = $db->error();
+			
+			$this->_settings = $newSettings;
+			
+			return $response;
+		}
+		
+		public function getHomePage() {
+			return $this->_settings['DefaultPage'];
+		}
+		
+		public function getTeacherOptions() {
+			// TODO(bret): Get this from the database!
+			return array(
+				'page' => $this->getHomePage(),
+				'product' => $this->_settings['DefaultProduct'],
+			);
 		}
 		
 		public static function sendLicenseToNewUser( $email, $data ) {
@@ -614,6 +663,25 @@
 		
 		public function setupLicense( $licSettings ) {
 		    // adds school/group info to license data
+		}
+		
+		// Takes a range integer and converts it to its four values
+		public static function convertRanges($rangeData) {
+			return array(
+				'accmin' => ($rangeData) & 0xFF,
+				'accmax' => ($rangeData >> 8) & 0xFF,
+				'ppsmin' => ($rangeData >> 16) & 0xFF,
+				'ppsmax' => ($rangeData >> 24) & 0xFF,
+			);
+		}
+		
+		// Takes the accuracy and PPS min/max and converts them into the format stored by the database
+		public static function encodeRanges($accmin, $accmax, $ppsmin, $ppsmax) {
+			return ($accmin) | ($accmax << 8) | ($ppsmin << 16) | ($ppsmax << 24);
+		}
+		
+		public function getRanges($type) {
+			return self::convertRanges($this->_settings[$type]);
 		}
 		
 	}
