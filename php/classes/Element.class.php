@@ -101,16 +101,18 @@
 				$user = User::getCurrentUser();
 				$userType = $user->getColumn('UserType');
 				$license = $user->getLicenseData();
-				if (time() > strtotime($license['EndDate'])) {
-					/*$canUpgrade = (($userType & (EDUCATIONAL_ADMIN | TEACHER_ADMIN | PARENT_GUARDIAN)) > 0);
-					if ($canUpgrade) {
-						header('location: ' . Config::get('documentroot') . 'manage/subscription');
-						die();
-					} else {*/
-						header('location: ' . Config::get('documentroot') . 'manage/alert');
-						die();
-					//}
-				}
+                if($userType != FLUENCY_GAMES_ADMIN) {
+                    if (time() > strtotime($license['EndDate'])) {
+                        /*$canUpgrade = (($userType & (EDUCATIONAL_ADMIN | TEACHER_ADMIN | PARENT_GUARDIAN)) > 0);
+                        if ($canUpgrade) {
+                            header('location: ' . Config::get('documentroot') . 'manage/subscription');
+                            die();
+                        } else {*/
+                            header('location: ' . Config::get('documentroot') . 'manage/alert');
+                            die();
+                        //}
+                    }
+                }   
 			}
 			
 			// TODO: Google Analytics
@@ -232,7 +234,7 @@
 						?>
 						<a href="<?php echo $documentroot; ?>manage/rosters">
 							<li<?php echo ($n == 4) ? ' class="selected"' : ''; ?>>
-								<span class="icon-th-large"></span>Rosters
+								<span class="icon-th-list"></span>Rosters
 							</li>
 						</a>
 						<?php
@@ -319,7 +321,7 @@
 						<ul>
 							<?php
 								$i = 0;
-								self::sidebarItem('../manage/index', 'Overview', $n, ++$i, EDUCATIONAL_ADMIN | TEACHER_ADMIN );
+								self::sidebarItem('../manage/index', 'Home', $n, ++$i, EDUCATIONAL_ADMIN | TEACHER_ADMIN );
 								self::sidebarItem('subscription', 'Manage Subscription', $n, ++$i, EDUCATIONAL_ADMIN | TEACHER_ADMIN | PARENT_GUARDIAN );
 								self::sidebarItem('teachers', 'Manage Teachers', $n, ++$i, EDUCATIONAL_ADMIN);
 								self::sidebarItem('rosters', 'Manage Rosters', $n, ++$i, TEACHER | TEACHER_ADMIN | EDUCATIONAL_ADMIN);
