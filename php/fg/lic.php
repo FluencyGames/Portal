@@ -3,14 +3,15 @@ header("Access-Control-Allow-Origin: *");
 require_once('license.php');
 
 $mysql_server = "localhost"; //This is probably correct
-//$mysql_username = "root";    // Your MySQL username
-//$mysql_password = "hatepit9";        // Your MySQL Password
-$mysql_database = "fluencyg_license";     // The name of your database
-//$mysql_table = "userlicenses"; // Your actual table to hold the data
+$mysql_username = "root";    // Your MySQL username
+$mysql_password = "root";        // Your MySQL Password
+$mysql_table = "userlicenses"; // Your actual table to hold the data
 
-$mysql_username = "fluencyg_admin";    // Your MySQL username
-$mysql_password = "FGdata@";        // Your MySQL Password
-$mysql_table = "UserLicenses"; // Your actual table to hold the data
+//$mysql_username = "fluencyg_admin";    // Your MySQL username
+//$mysql_password = "FGdata@";        // Your MySQL Password
+//$mysql_table = "UserLicenses"; // Your actual table to hold the data
+
+$mysql_database = "fluencyg_license";     // The name of your database
 
 // Make a MySQL Connection no changes need to be made here
 $con = mysql_connect($mysql_server,$mysql_username,$mysql_password) or die('1,Can not connect to server');
