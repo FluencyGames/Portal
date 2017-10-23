@@ -174,19 +174,6 @@
 								<div class="col-xs-6 col-sm-3 center">
 									<div class="info-stack" data-title="Start Date" data-date="<?php echo $startDate ?>"></div>
 								</div>
-								<!-- <div class="col-xs-3">
-									<div class="info-stack">
-										<div class="title">Start Date</div>
-										<div class="data-wrapper">
-											<div class="data">
-												<div class="top"><?php echo $startDate['month']; ?></div>
-												<div class="middle"><?php echo $startDate['date']; ?></div>
-												<div class="bottom"><?php echo $startDate['year']; ?></div>
-											</div>
-										</div>
-									</div>
-								</div> -->
-								
 								<div class="col-xs-6 col-sm-3 center<?php echo $expired ? ' error' : ''?>">
 									<div class="info-stack" data-title="End Date" data-date="<?php echo $endDate; ?>"></div>
 									<button id="extend-years-button" class="compact xs-margin-bottom"><?php echo $expired ? 'Renew' : 'Extend'; ?></button>
