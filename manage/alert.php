@@ -32,7 +32,7 @@
 							<?php
 								} else {
 							?>
-								Please let your educational administrator know that your license has expired, and needs to be renewed.
+								Please let your administrator know that your license has expired, and needs to be renewed.
 							<?php
 								}
 							?>
