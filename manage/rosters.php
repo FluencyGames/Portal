@@ -321,6 +321,21 @@
 									<span class="icon-download"></span> Download Template
 								</a>
 							</div>
+							<div>
+                                <form id="student-csv-upload-form">
+                                    <label for="student-csv-upload">
+                                        <a class="title">
+                                            <div class="content">
+                                                <p>
+                                                    <input id="student-csv-upload" accept=".csv" type="file" style = "display: none">
+                                                    <span class="icon-upload"></span> Upload Usernames
+                                                </p>
+                                            </div>
+                                        </a>
+                                    </label>                                                
+									<!--<span class="icon-upload"></span> Upload Usernames-->
+                                </form>
+							</div>                            
 							<!--<div id="student-uploading" class="uploading">
 								<div class="info-wrapper">
 									<div class="info">
