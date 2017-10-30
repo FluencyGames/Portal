@@ -15,7 +15,7 @@
         <!-- Set the background colour of the document -->
         <style>
             body {
-              background: #FFFFFF;
+              background: #ffffff;
               color:#cccccc;
               margin: 0px;
               padding: 0px;
@@ -68,6 +68,17 @@
                height: 100%;
             }
         </style>
+		
+		<script>
+			function jsDrawCenteredText(_graphics, x, y, colour, text) {
+				_graphics.fillStyle = colour;
+				_graphics.lineStyle = colour;
+				_graphics.font = "bold 18px Open Sans"; ;
+				_graphics.textAlign = "center";
+				_graphics.fillText(text, x, y);
+				_graphics.textAlign = "left";
+			}
+		</script>
     </head>
 
     <body>
@@ -78,7 +89,17 @@
             </canvas>
         </div>
 
+		<script>
+			var c = document.getElementById('canvas');
+			var ratio = c.height / c.width;
+			c.width  = window.innerWidth;
+			c.height = window.innerWidth * ratio;
+			var ctx = c.getContext("2d");
+			jsDrawCenteredText(ctx, c.width/2, c.height/2, "rgba(32,32,32,255)", "Loading...");
+		</script>
+
         <!-- Run the game code -->
-        <script type="text/javascript" src="html5game/Portal.js?CUGAC=1136491228"></script>
+        <script type="text/javascript" src="html5game/Portal.js?RAAZB=1787510307"></script>
+        <script>window.onload = GameMaker_Init;</script>
     </body>
 </html>

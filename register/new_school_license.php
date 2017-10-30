@@ -3,7 +3,7 @@
 	require_once(__DIR__ . "/../php/classes/User.class.php");
 	require_once(__DIR__ . "/../php/classes/Shop.class.php");
 	
-	Element::redirectUsersToHome();
+	//Element::redirectUsersToHome();
 	
 	$documentroot = Config::get('documentroot');
 	$shoproot = Config::get('shoproot');

@@ -4,7 +4,7 @@
 	require_once(__DIR__ . "/../php/classes/Shop.class.php");
     //$recaptcha = new \ReCaptcha\ReCaptcha($secret);
 
-	Element::redirectUsersToHome();
+	//Element::redirectUsersToHome();
 	
 	$documentroot = Config::get('documentroot');
 	$shoproot = Config::get('shoproot');
